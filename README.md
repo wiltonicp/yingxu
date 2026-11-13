@@ -24,7 +24,7 @@
 | --- | --- |
 | 部署方式 | Docker Engine + Docker Compose 插件 |
 | CPU 架构 | Linux x86-64 / `linux/amd64` |
-| Web 服务端口 | 容器内 `8800`，宿主机可自行映射 |
+| 默认页面端口 | 宿主机 `3800` → 容器内 `8800`，宿主机端口可自行修改 |
 | 持久化目录 | `/app/data` 和 `/app/library` |
 | 容器运行用户 | UID/GID `1000:1000` |
 
@@ -42,7 +42,7 @@ services:
     image: wiltonicp/yingxu:v1.0.0
     platform: linux/amd64
     ports:
-      - "8800:8800"
+      - "3800:8800"
     environment:
       YINGXU_DATA_DIR: /app/data
     volumes:
@@ -67,13 +67,29 @@ docker compose ps
 docker compose logs --tail=100 yingxu
 ```
 
-浏览器访问 `http://服务器地址:8800`。首次启动后，在服务器上读取初始化口令：
+浏览器访问 **`http://服务器地址:3800`**。默认映射为 `3800:8800`：左侧是浏览器访问的宿主机端口，右侧是容器内部服务端口。如果 3800 已占用，只修改左侧端口，并使用修改后的端口访问页面。
 
-```sh
-cat data/bootstrap.key
+### 获取初始化口令并创建管理员
+
+首次启动后，在服务器的 `compose.yaml` 所在目录执行：
+
+```bash
+docker compose exec -T yingxu cat /app/data/bootstrap.key
 ```
 
-使用该口令创建管理员。没有默认账号或密码，不开放自行注册。初始化口令、Cookie、API Key 与数据库密钥均应保密。
+这里的 `yingxu` 是 Compose 服务名，不要求容器实际名称也叫 `yingxu`。
+
+如果使用 `docker run` 或 NAS 管理界面部署，可按实际容器名读取。例如容器名为 `yingxu-v100`：
+
+```bash
+docker exec yingxu-v100 cat /app/data/bootstrap.key
+```
+
+容器名以 `docker ps` 显示的名称为准。采用本文目录挂载方式时，也可在服务器直接读取 `data/bootstrap.key`。
+
+将输出的初始化口令填入首次进入页面时的「本机初始化口令」，再设置管理员用户名和密码。没有默认账号或密码，不开放自行注册。已创建管理员后直接登录，无需重复初始化；不要删除数据库或密钥来重新初始化。
+
+初始化口令、Cookie、API Key 与数据库密钥均应保密，不要粘贴到公开仓库或反馈截图中。
 
 ### 反向代理
 
@@ -83,7 +99,7 @@ cat data/bootstrap.key
 YINGXU_WEB_ORIGIN: https://media.example.com
 ```
 
-填写准确的协议、域名及端口，不包含路径。反向代理应转发整个 Web 服务和 `/api`，不要只转发前端页面。播放服务地址需设置为媒体服务器或播放器实际可访问的地址。
+填写准确的协议、域名及端口，不包含路径。直接通过 HTTP 的 3800 端口访问时，通常无需设置该项；配置后应与实际浏览器入口一致。反向代理应转发整个 Web 服务和 `/api`，不要只转发前端页面。播放服务地址需设置为媒体服务器或播放器实际可访问的地址。
 
 ## 首次配置
 

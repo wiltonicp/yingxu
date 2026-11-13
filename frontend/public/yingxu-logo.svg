@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="映序 标识 A">
+  <title>映序 · 方案 A 光阶</title>
+  <defs>
+    <linearGradient id="a-bar" x1="258" y1="256" x2="470" y2="256" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2F5BFF"/>
+      <stop offset="0.55" stop-color="#4C7BFF"/>
+      <stop offset="1" stop-color="#9DB8FF"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="#0E1322"/>
+
+  <!-- 光源 -->
+  <circle cx="138" cy="256" r="100" fill="#FFFFFF"/>
+
+  <!-- 递进影格：底边对齐，三级升高 -->
+  <g fill="url(#a-bar)">
+    <rect x="262" y="264" width="48" height="152" rx="24"/>
+    <rect x="342" y="180" width="48" height="236" rx="24"/>
+    <rect x="422" y="96"  width="48" height="320" rx="24"/>
+  </g>
+</svg>

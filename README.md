@@ -8,10 +8,10 @@
 <p align="center">面向个人服务器与 NAS 的媒体发现、订阅与入库管理工具。</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.0-2563eb?style=flat-square" alt="版本 1.0.0" />
+  <img src="https://img.shields.io/badge/version-1.2.0-2563eb?style=flat-square" alt="版本 1.2.0" />
   <img src="https://img.shields.io/badge/platform-Linux%20amd64-334155?style=flat-square" alt="Linux amd64" />
   <img src="https://img.shields.io/badge/deploy-Docker-2496ed?style=flat-square&amp;logo=docker&amp;logoColor=white" alt="Docker 部署" />
-  <img src="https://img.shields.io/badge/DockerHub-v1.0.0-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.0.0" />
+  <img src="https://img.shields.io/badge/DockerHub-v1.2.0-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.2.0" />
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@
 
 **发现 / 订阅 → 资源匹配 → 115 核对入库 → 整理刮削 → STRM / NFO → 媒体服务**
 
-> **v1.0.0 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
+> **v1.2.0 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
 
 ## 主要功能
 
@@ -47,7 +47,7 @@
 
 ## 支持环境
 
-| 项目 | v1.0.0 目标 |
+| 项目 | v1.2.0 目标 |
 | --- | --- |
 | 部署方式 | Docker Engine + Docker Compose 插件 |
 | CPU 架构 | Linux x86-64 / `linux/amd64` |
@@ -59,7 +59,7 @@
 
 ## 快速开始
 
-镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.0.0`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.0.0`。
+镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.2.0`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.2.0`。
 
 部署前请确认：
 
@@ -178,6 +178,19 @@ Emby 302 反代同时支持旧 `/play115/…` 和映序新签名链接，仍先�
 输出页可检测并填入当前内网可访问的服务地址，默认部署端口 **3008**；也可点击“使用检测地址”或手动填写域名。配置了 `YINGXU_PUBLIC_BASE_URL` 或 `YINGXU_WEB_ORIGIN` 时优先采用明确配置的入口。多网卡、反向代理或外网访问时请核对实际可达性；检测不明确会提示手动填写，不猜测网卡。
 
 修改地址后需要保存，之后的新输出使用新地址；**不会批量改写已有 STRM**。历史文件中的旧地址应通过明确的索引重建操作更新，不要通过删除网盘影片来处理。
+
+## 每日自动签到
+
+在「连接设置 → 115 网盘」和「连接设置 → RE0 资源」各自的**每日签到**卡片设置：
+
+| 服务 | 默认时间 | 开关 |
+| --- | --- | --- |
+| 115 | **03:00** | 默认关闭，需先扫码授权 |
+| RE0 | **00:10** | 默认关闭，需先配置并启用 RE0 授权 |
+
+两项互相独立，可修改时间并保存，均按**北京时间（Asia/Shanghai，UTC+8）**执行，不受容器系统时区影响。RE0 仅执行普通签到，不使用赌狗模式。
+
+服务需保持运行；当日错过时间，启动后会补执行一次。先核对上游今日状态，已签到不重复提交。每日执行记录持久保存，重启或反复保存不会重复签到；请求超时或结果不明显示「待核对」，当天不盲目重发。次日按保存的时间继续执行。卡片显示最近状态和下次执行时间。
 
 ## RE0 自动订阅与积分
 

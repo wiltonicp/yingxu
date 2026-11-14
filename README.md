@@ -8,10 +8,10 @@
 <p align="center">面向个人服务器与 NAS 的媒体发现、订阅与入库管理工具。</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.2.0-2563eb?style=flat-square" alt="版本 1.2.0" />
+  <img src="https://img.shields.io/badge/version-1.3.0-2563eb?style=flat-square" alt="版本 1.3.0" />
   <img src="https://img.shields.io/badge/platform-Linux%20amd64-334155?style=flat-square" alt="Linux amd64" />
   <img src="https://img.shields.io/badge/deploy-Docker-2496ed?style=flat-square&amp;logo=docker&amp;logoColor=white" alt="Docker 部署" />
-  <img src="https://img.shields.io/badge/DockerHub-v1.2.0-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.2.0" />
+  <img src="https://img.shields.io/badge/DockerHub-v1.3.0-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.3.0" />
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@
 
 **发现 / 订阅 → 资源匹配 → 115 核对入库 → 整理刮削 → STRM / NFO → 媒体服务**
 
-> **v1.2.0 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
+> **v1.3.0 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
 
 ## 主要功能
 
@@ -47,7 +47,7 @@
 
 ## 支持环境
 
-| 项目 | v1.2.0 目标 |
+| 项目 | v1.3.0 目标 |
 | --- | --- |
 | 部署方式 | Docker Engine + Docker Compose 插件 |
 | CPU 架构 | Linux x86-64 / `linux/amd64` |
@@ -59,7 +59,7 @@
 
 ## 快速开始
 
-镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.2.0`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.2.0`。
+镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.3.0`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.3.0`。
 
 部署前请确认：
 
@@ -205,6 +205,18 @@ Emby 302 反代同时支持旧 `/play115/…` 和映序新签名链接，仍先�
 - 清单缺失、截断、重名、身份或季集不明确时暂停，不猜测入库。
 
 RE0 账号和积分由管理员共享配置，普通用户不直接操作积分。上游限流、授权失效或资源校验失败会显示实际错误。
+
+## Telegram 通知
+
+在「连接设置 → TG 通知」保存 Bot Token 和接收者 ID，并打开「任务事件通知」。先给机器人发送 `/start`，再使用页面的测试按钮检查连接。测试模板包括连接、115/RE0 签到、任务失败及影片入库文字示例；示例会明确标注为测试，不触发实际签到或媒体操作。
+
+- **具体影片通知**：订阅申请、审批结果、添加订阅、订阅完成、115 转存完成、整理与 STRM 入库完成；有已知 TMDB 海报时发送图文，无有效海报时发送文字。
+- **入库卡片**：显示已知的片名、年份、季集、分类、原始文件声明的版本、文件大小、TMDB 和发布组等；未知字段省略，不把文件名规格当作码流实测。
+- **签到和异常**：115/RE0 签到成功、已签到、失败、结果待核对，以及转存/整理/识别等任务异常。主动停止不报失败。
+- **去重**：签到按服务与日期去重；任务异常按任务或文件与错误原因去重；已有事件标识保留。只通知启用后新发生的事件，不批量补发历史记录。
+- **发送结果不明**：不自动重发图片，也不额外补发一条文字，避免重复消息。通知异常不改变媒体任务本身的结果。
+
+通知记录保留在后台用于去重，不在配置页面展示列表。Token 只在后端加密保存，不会放进通知中。
 
 ## 数据备份与升级
 

@@ -4,7 +4,7 @@ import {Subscriptions,Requests} from './SubscriptionPages';
 import {StatusBadge} from './StatusBadge';
 import {ProcessingRecordsPage,LogCenterPage} from './ProcessingRecords';
 import {processingErrors,processingStates,processingSteps} from './processingLabels';
-import {Brand} from './Brand';
+import {AuthPage} from './AuthPage';
 import {VersionBadge} from './VersionBadge';
 import {useEffect, useRef, useState, type FormEvent, type ReactNode} from 'react';
 import {NavLink, Route, Routes, Navigate, useParams} from 'react-router-dom';
@@ -51,10 +51,7 @@ export default function App(){
  if(setup.isError)return <div className="auth-shell"><div className="gate"><h1>后端尚未就绪</h1><p className="error">{setup.error.message}</p><button onClick={()=>setup.refetch()}>重试</button></div></div>;
  if(setup.data?.required||!session.data){
   const initial=setup.data?.required;
-  return <div className="auth-shell auth-hero-shell"><aside className="auth-showcase"><span className="auth-kicker">映序 · 让好故事有序发生</span><h2>每一份期待，<br/>都有它的归处。</h2><div className="auth-art" aria-hidden="true"><div/><div/><div><Clapperboard size={38}/></div></div><p>发现 · 订阅 · 整理</p></aside><main className="gate"><Brand/><h1>{initial?'创建你的映序空间。':'登录映序'}</h1><p className="auth-caption">{initial?'创建你的专属工作空间':'从想看，到入库。'}</p><form onSubmit={async(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const data=new FormData(e.currentTarget);setBusy(true);setError('');try{const body={username:String(data.get('username')),password:String(data.get('password')),...(initial?{setup_token:String(data.get('setup_token')).trim()}:{})};const s=await api<Session>(initial?'/setup':'/login','POST',body);setCsrf(s.csrf);cache.setQueryData(['setup'],{required:false});cache.setQueryData(['session'],s);}catch(e){setError((e as Error).message);}finally{setBusy(false);}}}>
-   {initial&&<label>本机初始化口令<input name="setup_token" type="password" required autoComplete="off"/><small>从程序目录 data/bootstrap.key 获取，不需要发送到聊天。</small></label>}
-   <label>用户名<input name="username" placeholder="请输入用户名" minLength={3} maxLength={32} pattern="[A-Za-z0-9_.-]+" autoComplete="username" required/></label><label>密码<input name="password" placeholder="请输入密码" type="password" minLength={6} maxLength={128} autoComplete={initial?'new-password':'current-password'} required/><small>至少 6 个字符。</small></label>{error&&<p className="error" role="alert">{error}</p>}<button className="primary" disabled={busy}>{busy?<Loading kind="compact" label="正在提交…"/>:initial?'创建超管账号':'登录映序'}</button>
-  </form><p className="muted">订阅申请 · 115整理 · STRM输出</p><VersionBadge/></main></div>;
+  return <AuthPage initial={!!initial} busy={busy} error={error} onSubmit={async(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const data=new FormData(e.currentTarget);setBusy(true);setError('');try{const body={username:String(data.get('username')),password:String(data.get('password')),...(initial?{setup_token:String(data.get('setup_token')).trim()}:{})};const s=await api<Session>(initial?'/setup':'/login','POST',body);setCsrf(s.csrf);cache.setQueryData(['setup'],{required:false});cache.setQueryData(['session'],s);}catch(e){setError((e as Error).message);}finally{setBusy(false);}}}/>;
  }
  const user=session.data.user,admin=user.role==='admin';
  const links=navigationGroups(admin).flatMap(group=>group.links);

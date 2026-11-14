@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/version-1.0.0-2563eb?style=flat-square" alt="版本 1.0.0" />
   <img src="https://img.shields.io/badge/platform-Linux%20amd64-334155?style=flat-square" alt="Linux amd64" />
   <img src="https://img.shields.io/badge/deploy-Docker-2496ed?style=flat-square&amp;logo=docker&amp;logoColor=white" alt="Docker 部署" />
-  <img src="https://img.shields.io/badge/image-pending-f59e0b?style=flat-square" alt="镜像尚未公开发布" />
+  <img src="https://img.shields.io/badge/DockerHub-v1.0.0-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.0.0" />
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@
 
 **发现 / 订阅 → 资源匹配 → 115 核对入库 → 整理刮削 → STRM / NFO → 媒体服务**
 
-> **v1.0.0 镜像发布待定**：Linux x86-64 原生编译镜像已完成容器启动、初始化、认证、持久化及编译态业务回归验证，尚未发布到 DockerHub。下文为首版部署方式；请以正式发布公告及镜像标签实际可用状态为准。
+> **v1.0.0 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
 
 ## 主要功能
 
@@ -51,7 +51,7 @@
 | --- | --- |
 | 部署方式 | Docker Engine + Docker Compose 插件 |
 | CPU 架构 | Linux x86-64 / `linux/amd64` |
-| 默认页面端口 | host 网络直接监听 `3800`；可选 Emby 302 入口默认 `13800` |
+| 默认页面端口 | host 网络直接监听 `3008`；可选 Emby 302 入口默认 `18099` |
 | 持久化目录 | `/app/data` 和 `/app/library` |
 | 容器运行用户 | UID/GID `1000:1000` |
 
@@ -59,12 +59,12 @@
 
 ## 快速开始
 
-正式镜像计划为 **`wiltonicp/yingxu:v1.0.0`**。建议固定版本标签，不依赖 `latest` 自动升级。
+正式镜像为 **`wiltonicp/yingxu:v1.0.0`**。建议固定版本标签，不依赖 `latest` 自动升级。
 
 部署前请确认：
 
 - 已安装 Docker Engine 和 Docker Compose 插件；本配置使用 Linux host 网络。
-- 使用 Linux x86-64 主机，默认端口 **3800** 未被占用。
+- 使用 Linux x86-64 主机，默认端口 **3008** 未被占用。
 - 已准备独立的持久化目录，不与其他映序实例共用数据库。
 
 在 Linux 服务器上新建一个空目录，创建 `compose.yaml`：
@@ -87,7 +87,7 @@ services:
       - no-new-privileges:true
 ```
 
-镜像正式发布后执行：
+准备好 `compose.yaml` 后执行：
 
 ```sh
 mkdir -p data library
@@ -99,7 +99,7 @@ docker compose ps
 docker compose logs --tail=100 yingxu
 ```
 
-浏览器访问 **`http://服务器地址:3800`**。使用 `network_mode: host` 时，容器与宿主机共享网络，**不配置 `ports` 端口映射**。请确保 3800 未被其他服务占用；host 模式不会自动调整主机防火墙，客户端仍需能够访问该端口。
+浏览器访问 **`http://服务器地址:3008`**。使用 `network_mode: host` 时，容器与宿主机共享网络，**不配置 `ports` 端口映射**。请确保 3008 未被其他服务占用；host 模式不会自动调整主机防火墙，客户端仍需能够访问该端口。
 
 ### 获取初始化口令并创建管理员
 
@@ -131,7 +131,7 @@ docker exec yingxu-v100 cat /app/data/bootstrap.key
 YINGXU_WEB_ORIGIN: https://media.example.com
 ```
 
-填写准确的协议、域名及端口，不包含路径。直接通过 HTTP 的 3800 端口访问时，通常无需设置该项；配置后应与实际浏览器入口一致。反向代理应转发整个 Web 服务和 `/api`，不要只转发前端页面。播放服务地址需设置为媒体服务器或播放器实际可访问的地址。
+填写准确的协议、域名及端口，不包含路径。直接通过 HTTP 的 3008 端口访问时，通常无需设置该项；配置后应与实际浏览器入口一致。反向代理应转发整个 Web 服务和 `/api`，不要只转发前端页面。播放服务地址需设置为媒体服务器或播放器实际可访问的地址。
 
 ## 首次配置
 
@@ -146,18 +146,32 @@ TG 通知的 Bot Token/用户 ID 仅用于可选通知；公开频道采集不�
 
 ## Emby 302 反代
 
-在「连接设置 → Emby 配置」中启用 **302 反代**，默认监听端口 **13800**，可修改。保存后应用，无需为 host 网络增加端口映射。
+在「连接设置 → Emby 配置」中启用 **302 反代**，默认监听端口 **18099**，可修改。保存后应用，无需为 host 网络增加端口映射。
 
 1. Emby 服务器地址仍填写原服务地址，例如 `http://Emby服务器:8096`，不要填反代地址。
-2. Emby 客户端改为连接 `http://映序服务器:13800`，使用原 Emby 账号登录；修改端口后使用对应端口。
+2. Emby 客户端改为连接 `http://映序服务器:18099`，使用原 Emby 账号登录；修改端口后使用对应端口。
 3. 对映序签名 STRM，反代核对当前 Emby 用户及媒体播放权限，再按播放器 User-Agent 获取115临时地址并302跳转。不会拿管理员安装密钥替用户播放。
 4. 普通媒体、转码请求、媒体控制和 WebSocket 仍由原 Emby 处理；302 不提供转码能力，客户端需支持原始视频格式。
 
-反代不代管 Emby 的媒体目录挂载。仅接管映序生成且签名有效的 STRM，不自动读取任意本地 STRM 或转换第三方网盘链接。不要让反代端口与映序主服务、Emby 上游或其他服务冲突。
+反代不代管 Emby 的媒体目录挂载。仅接管映序生成且签名有效的 STRM，以及下文明确支持的旧版 `/play115/` 链接；不自动读取任意本地 STRM 或转换其他第三方网盘链接。不要让反代端口与映序主服务、Emby 上游或其他服务冲突。
+
+### 兼容旧版 115 STRM
+
+默认支持旧软件生成的以下格式，**无需额外开关、逐条登记或重新生成 STRM**：
+
+```text
+http://映序服务器:3008/play115/{pickcode}/{文件ID}/{SHA1}/{文件大小}/{URL编码后的文件名}
+```
+
+只需批量把旧的 `http://旧服务器:旧端口` 替换为映序地址，后面的路径、参数和文件名编码原样保留。程序使用现有115 SDK解析提取标识，核对当前授权账号的实际文件ID、提取标识、SHA1和大小，再按播放器User-Agent获取临时直链并302跳转，不依赖旧软件继续运行，也不转存或改动网盘文件。
+
+Emby 302 反代同时支持旧 `/play115/…` 和映序新签名链接，仍先核对Emby用户及播放权限。文件名仅作显示，已重命名但身份核对一致的文件仍可播放；文件信息不符、当前账号无权限或直链要求额外Cookie时会明确报错，不猜测其他文件。
+
+旧链接本身视作播放凭据，请勿公开。新生成的 STRM 继续采用 `/api/playback/{资源标识}/{签名}` 格式；兼容功能不会批量改写历史文件。
 
 ### STRM 播放入口地址
 
-输出页可检测并填入当前内网可访问的服务地址，默认部署端口 **3800**；也可点击“使用检测地址”或手动填写域名。配置了 `YINGXU_PUBLIC_BASE_URL` 或 `YINGXU_WEB_ORIGIN` 时优先采用明确配置的入口。多网卡、反向代理或外网访问时请核对实际可达性；检测不明确会提示手动填写，不猜测网卡。
+输出页可检测并填入当前内网可访问的服务地址，默认部署端口 **3008**；也可点击“使用检测地址”或手动填写域名。配置了 `YINGXU_PUBLIC_BASE_URL` 或 `YINGXU_WEB_ORIGIN` 时优先采用明确配置的入口。多网卡、反向代理或外网访问时请核对实际可达性；检测不明确会提示手动填写，不猜测网卡。
 
 修改地址后需要保存，之后的新输出使用新地址；**不会批量改写已有 STRM**。历史文件中的旧地址应通过明确的索引重建操作更新，不要通过删除网盘影片来处理。
 

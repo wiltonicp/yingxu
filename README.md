@@ -59,7 +59,7 @@
 
 ## 快速开始
 
-正式镜像为 **`wiltonicp/yingxu:v1.0.0`**。建议固定版本标签，不依赖 `latest` 自动升级。
+镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.0.0`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.0.0`。
 
 部署前请确认：
 
@@ -67,12 +67,14 @@
 - 使用 Linux x86-64 主机，默认端口 **3008** 未被占用。
 - 已准备独立的持久化目录，不与其他映序实例共用数据库。
 
+### Docker Compose 部署（latest）
+
 在 Linux 服务器上新建一个空目录，创建 `compose.yaml`：
 
 ```yaml
 services:
   yingxu:
-    image: wiltonicp/yingxu:v1.0.0
+    image: wiltonicp/yingxu:latest
     platform: linux/amd64
     network_mode: host
     environment:
@@ -100,6 +102,8 @@ docker compose logs --tail=100 yingxu
 ```
 
 浏览器访问 **`http://服务器地址:3008`**。使用 `network_mode: host` 时，容器与宿主机共享网络，**不配置 `ports` 端口映射**。请确保 3008 未被其他服务占用；host 模式不会自动调整主机防火墙，客户端仍需能够访问该端口。
+
+更新 `latest` 时，在原配置目录执行 `docker compose pull && docker compose up -d`，保留 `data` 和 `library`，更新前做好备份。`latest` 标签会随版本更新，不会自动升级运行中的容器。
 
 ### 获取初始化口令并创建管理员
 

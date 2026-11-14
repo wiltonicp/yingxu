@@ -8,10 +8,10 @@
 <p align="center">面向个人服务器与 NAS 的媒体发现、订阅与入库管理工具。</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.3.0-2563eb?style=flat-square" alt="版本 1.3.0" />
+  <img src="https://img.shields.io/badge/version-1.3.1-2563eb?style=flat-square" alt="版本 1.3.1" />
   <img src="https://img.shields.io/badge/platform-Linux%20amd64-334155?style=flat-square" alt="Linux amd64" />
   <img src="https://img.shields.io/badge/deploy-Docker-2496ed?style=flat-square&amp;logo=docker&amp;logoColor=white" alt="Docker 部署" />
-  <img src="https://img.shields.io/badge/DockerHub-v1.3.0-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.3.0" />
+  <img src="https://img.shields.io/badge/DockerHub-v1.3.1-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.3.1" />
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@
 
 **发现 / 订阅 → 资源匹配 → 115 核对入库 → 整理刮削 → STRM / NFO → 媒体服务**
 
-> **v1.3.0 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
+> **v1.3.1 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
 
 ## 主要功能
 
@@ -47,19 +47,19 @@
 
 ## 支持环境
 
-| 项目 | v1.3.0 目标 |
+| 项目 | v1.3.1 目标 |
 | --- | --- |
 | 部署方式 | Docker Engine + Docker Compose 插件 |
 | CPU 架构 | Linux x86-64 / `linux/amd64` |
 | 默认页面端口 | host 网络直接监听 `3008`；可选 Emby 302 入口默认 `18099` |
 | 持久化目录 | `/app/data` 和 `/app/library` |
-| 容器运行用户 | UID/GID `1000:1000` |
+| 容器运行用户 | 本文 Compose 使用 `user: "0:0"`；镜像默认用户仍为 `1000:1000` |
 
 目前不是集群部署方案，不支持多个实例同时写同一数据库或同一账号任务。ARM 平台不在首版验收范围内。
 
 ## 快速开始
 
-镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.3.0`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.3.0`。
+镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.3.1`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.3.1`。
 
 部署前请确认：
 
@@ -76,6 +76,7 @@ services:
   yingxu:
     image: wiltonicp/yingxu:latest
     platform: linux/amd64
+    user: "0:0"
     network_mode: host
     environment:
       YINGXU_DATA_DIR: /app/data
@@ -89,11 +90,12 @@ services:
       - no-new-privileges:true
 ```
 
+这里显式采用 root（`user: "0:0"`）运行，因此通常无需再将目录改为 UID/GID 1000。root 权限较高，请仅挂载必要目录；只读挂载和网络文件系统权限限制仍需单独处理。
+
 准备好 `compose.yaml` 后执行：
 
 ```sh
 mkdir -p data library
-sudo chown 1000:1000 data library
 chmod 700 data
 docker compose pull
 docker compose up -d
@@ -179,6 +181,12 @@ Emby 302 反代同时支持旧 `/play115/…` 和映序新签名链接，仍先�
 
 修改地址后需要保存，之后的新输出使用新地址；**不会批量改写已有 STRM**。历史文件中的旧地址应通过明确的索引重建操作更新，不要通过删除网盘影片来处理。
 
+### RE0 首次授权
+
+新机器在「连接设置 → RE0 资源」点击 **授权登录**即可：程序自动创建并加密保存本机身份，然后自动打开 RE0 授权页，无需填写安装 ID 或签名密钥。完成授权后返回映序会自动检查状态，也可手动刷新。
+
+本机身份与已有凭证会持续复用，网络失败或重启不会重新生成。备份时保留完整 `data` 目录及匹配密钥；全新数据目录属于新身份，需要重新授权。若浏览器拦截授权窗口，请允许此页面弹出窗口后再点击。自定义云端地址不使用默认服务的共享签名密钥。
+
 ## 每日自动签到
 
 在「连接设置 → 115 网盘」和「连接设置 → RE0 资源」各自的**每日签到**卡片设置：
@@ -242,7 +250,7 @@ docker compose logs --tail=100 yingxu
 
 ## 常见问题
 
-**容器无法写入目录？** 检查挂载路径及 UID/GID 1000 的权限，不要删除已有数据库来解决权限问题。
+**容器无法写入目录？** 本文 Compose 以 root（`0:0`）运行，普通本地目录通常无需额外 chown；仍需检查只读挂载、NAS ACL 或 NFS root-squash 等限制，不要删除已有数据库来解决权限问题。
 
 **STRM 无法播放？** 检查播放服务地址是否可从媒体服务器访问、115 授权是否有效，以及媒体服务是否正确挂载输出目录。容器里的 `127.0.0.1` 不是其他机器的地址。
 

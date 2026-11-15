@@ -1,0 +1,22 @@
+import {useEffect,useRef} from 'react';
+import {useQuery} from '@tanstack/react-query';
+import {X} from 'lucide-react';
+import {api} from './api';
+import {Loading} from './Loading';
+import {StatusBadge} from './StatusBadge';
+export const jobErrorLabels:Record<string,string>={episode_identity_missing:'已有剧集，但候选文件的季号、集号或片名未明确；未重复接收，请核对资源',subscription_completed:'订阅已完成，后续任务已取消',drive115_not_connected:'尚未扫码授权115，未发起转存',result_unknown:'上游结果不明，先核对实际文件，禁止直接重试',source_revision_changed:'原消息已更新，旧版本任务停止',subscription_inactive:'订阅已暂停、删除或无人关注',monitor_disabled:'监控关闭或配置更新，任务停止',precondition_changed:'资源版本或订阅前置条件已变化',target_conflict:'目标目录有同名对象，未覆盖',manifest_incomplete:'分享缺少文件大小或SHA1信息，未接收',share_unavailable:'分享检查被115拒绝，请核对链接和提取码',share_cancelled:'分享已被发布者取消，记录保留但不转存',transfer_preflight_failed:'转存预检查失败，未发起接收',directory_mismatch:'115返回的目录与目标CID不符',mixed_existing_media:'分享包含已入库与未入库的混合集，待逐文件确认',share_has_no_video:'分享未包含支持的视频文件',content_identity_conflict:'文件内容与媒体身份记录冲突',manifest_too_large:'分享文件树超过首版500条扫描上限，未接收',manifest_too_deep:'分享目录超过首版4层扫描上限，未接收',library_account_changed:'入库记录属于之前的115账号，需核对',library_content_stale:'已入库文件位置或内容已变化，未误报成功'};
+export function jobReason(status:string,error:string){
+ if(error)return jobErrorLabels[error]||error;
+ return ({succeeded:'转存已完成并核对',queued:'等待执行',running:'正在检查或接收文件',retry_wait:'等待重试',cancelled:'任务已取消',blocked:'任务受阻，请查看详情',failed:'执行失败，请查看详情'} as Record<string,string>)[status]||'状态待核对';
+}
+type Detail={id:number;title:string;resource_title:string;resource_id:number;kind:string;status:string;error_code:string;attempt:number;target_cid:string;created_at:number;updated_at:number;phase:string;verified_at?:number;reused_video_count:number;processing:{status:string;total:number;completed:number;failed:number;pending:number;failures:{filename:string;error_code:string;step:string}[]};files:{name:string;size?:number}[]};
+const date=(n?:number)=>n?new Date(n*1000).toLocaleString('zh-CN',{hour12:false}):'—';
+const phases:Record<string,string>={not_started:'尚未发起接收',receive_started:'已发起接收，等待核对',verified:'转存结果已核对',existing_library:'集数或内容已存在，未重复转存'};
+const states:Record<string,string>={succeeded:'完成',queued:'等待执行',running:'执行中',blocked:'受阻',failed:'失败',cancelled:'已取消',waiting:'等待整理',not_started:'尚未开始'};
+export function JobDetail({id,close}:{id:number;close:()=>void}){
+ const dialog=useRef<HTMLDialogElement>(null);
+ const query=useQuery({queryKey:['job-detail',id],queryFn:()=>api<Detail>('/jobs/'+id),refetchInterval:q=>['queued','running'].includes(q.state.data?.status||'')?5000:false});
+ useEffect(()=>{dialog.current?.showModal();},[]);
+ const row=query.data;
+ return <dialog ref={dialog} className="resource-dialog resource-detail-dialog" aria-label="任务详情" onCancel={e=>{e.preventDefault();close();}}><div className="dialog-head"><div><small>任务 #{id}</small><h2>任务详情</h2></div><button className="icon-button" aria-label="关闭任务详情" onClick={close}><X/></button></div><div className="dialog-body">{query.isPending?<Loading/>:query.error?<p className="error">{query.error.message}</p>:row&&<><h3>{row.title}</h3><p>{row.resource_title}</p><StatusBadge status={row.status} label={states[row.status]||row.status}/><div className="resource-facts-grid"><div><small>创建时间</small><b>{date(row.created_at)}</b></div><div><small>操作时间</small><b>{date(row.updated_at)}</b></div><div><small>核对时间</small><b>{date(row.verified_at)}</b></div><div><small>任务来源</small><b>{row.kind.startsWith('re0')?'RE0':row.kind.startsWith('archive')?'手动资源转存':'订阅自动转存'}</b></div><div><small>尝试次数</small><b>{row.attempt}</b></div><div><small>目标目录 CID</small><code>{row.target_cid}</code></div></div><section className="resource-detail-section"><h3>转存与整理进度</h3><p>{phases[row.phase]||row.phase}</p><p>{jobReason(row.status,row.error_code)}</p><p>复用已有视频 {row.reused_video_count} 个</p><p>整理：{states[row.processing.status]||row.processing.status} · 完成 {row.processing.completed}/{row.processing.total} · 待处理 {row.processing.pending} · 失败 {row.processing.failed}</p>{row.processing.failures.map((f,i)=><p className="error" key={i}>{f.filename} · {f.step} · {f.error_code}</p>)}</section><section className="resource-detail-section"><h3>文件清单</h3>{row.files.length?row.files.map((f,i)=><div key={i} style={{overflowWrap:'anywhere',padding:'8px 0'}}><b>{f.name}</b><small>{f.size!=null?(f.size/1024**3).toFixed(2)+' GiB':'大小待确认'}</small></div>):<p className="muted">尚未生成已核对的文件清单。</p>}</section></>}</div><div className="dialog-foot"><button onClick={()=>query.refetch()}>刷新详情</button><button onClick={close}>关闭</button></div></dialog>;
+}

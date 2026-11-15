@@ -353,3 +353,22 @@ body{color:var(--ink);background:radial-gradient(ellipse at 4% 5%,#e6eff9 0,tran
 .app-version{display:block;color:var(--muted,#71839b);font-size:11px;line-height:1.5;text-align:center;padding:8px 12px;margin:0;letter-spacing:.02em}.app-version span{font-variant-numeric:tabular-nums}.sidebar>.app-version{flex-shrink:0}.mobile-menu .app-version{padding-top:16px}
 
 .policy-save-bar .policy-save-error{flex-basis:100%;margin:8px 0 0}
+
+/* Processing actions: stable labels, distinct semantics, no narrow button wrapping. */
+.runtime-status-panel .record{align-items:center;gap:20px;flex-wrap:wrap}
+.runtime-status-panel .record>div:first-child{flex:1 1 360px;min-width:0;overflow-wrap:anywhere}
+.receipt-action-group{flex:0 0 auto;max-width:100%}.receipt-action-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.receipt-action-buttons button,.record-card-actions>button{display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;min-width:112px;min-height:42px;padding:10px 16px;border-radius:13px;line-height:1.3;flex:0 0 auto}
+button.action-inspect,.processing-record-dialog button.action-inspect{background:#eaf2ff;color:#2567b5;border-color:#cbdffb}
+button.action-resume,.processing-record-dialog button.action-resume{background:#16815e;color:#fff;border-color:#16815e}
+button.action-ignore,.processing-record-dialog button.action-ignore{background:#fff3de;color:#986013;border-color:#efd2a2}
+button.action-restore,.processing-record-dialog button.action-restore{background:#eeeaf9;color:#6d58a4;border-color:#d9cfee}
+.action-inspect:not(:disabled):hover{background:#dceaff}.action-resume:not(:disabled):hover{background:#116c4e}.action-ignore:not(:disabled):hover{background:#ffeac6}
+.record-card-actions{align-items:start;flex-wrap:wrap}.record-card-actions .receipt-action-group{flex-basis:auto}.receipt-action-group p{max-width:440px;white-space:normal}
+@media(max-width:640px){.runtime-status-panel .record>div:first-child{flex-basis:100%}.receipt-action-group{width:100%}.receipt-action-buttons{gap:8px}.receipt-action-buttons button{flex:1 1 130px}.record-card-actions>button{flex:1 1 100px}.record-card-actions .receipt-action-group{flex:1 1 100%;width:100%}}
+
+.organize-record-card .record-card-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:start}
+.organize-record-card .record-card-actions>button,.organize-record-card .record-card-actions .receipt-action-buttons button{width:100%;min-width:0;padding-inline:10px}
+.organize-record-card .record-card-actions .receipt-action-group{width:100%;min-width:0}
+.organize-record-card .record-card-actions .receipt-action-buttons{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(max-width:640px){.organize-record-card .record-card-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.organize-record-card .record-card-actions .receipt-action-group{grid-column:1/-1}}

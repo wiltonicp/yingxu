@@ -1,3 +1,4 @@
+import {AccessSettings} from './AccessSettings';
 import {DEFAULT_WASHING_KEYS,policyUpdatePayload} from './processingPolicyForm';
 import {Re0Page} from './Re0Pages';
 import {Subscriptions,Requests} from './SubscriptionPages';
@@ -5,6 +6,8 @@ import {StatusBadge} from './StatusBadge';
 import {ProcessingRecordsPage,LogCenterPage} from './ProcessingRecords';
 import {processingErrors,processingStates,processingSteps} from './processingLabels';
 import {AuthPage} from './AuthPage';
+import {useMobileLayout} from './authDevice';
+import {useMobileViewport} from './useMobileViewport';
 import {VersionBadge} from './VersionBadge';
 import {useEffect, useRef, useState, type FormEvent, type ReactNode} from 'react';
 import {NavLink, Route, Routes, Navigate, useParams} from 'react-router-dom';
@@ -40,6 +43,7 @@ function Modal({state,close,busy,error}:{state:DialogState;close:()=>void;busy:b
 function MobileMenu({children,close}:{children:ReactNode;close:()=>void}){const ref=useRef<HTMLDialogElement>(null);useEffect(()=>{ref.current?.showModal();},[]);return <dialog className="mobile-menu" ref={ref} onCancel={e=>{e.preventDefault();close();}}><div className="dialog-head"><h2>更多</h2><button className="icon-button" aria-label="关闭更多页面" onClick={close}><X/></button></div><div className="dialog-body">{children}</div></dialog>;}
 
 export default function App(){
+ const mobileLayout=useMobileLayout(),keyboardOpen=useMobileViewport(mobileLayout);
  const cache=useQueryClient();
  const setup=useQuery({queryKey:['setup'],queryFn:()=>api<{required:boolean}>('/setup')});
  const session=useQuery({queryKey:['session'],enabled:setup.data?.required===false,queryFn:async()=>{const s=await api<Session>('/session');setCsrf(s.csrf);return s;}});
@@ -51,11 +55,11 @@ export default function App(){
  if(setup.isError)return <div className="auth-shell"><div className="gate"><h1>后端尚未就绪</h1><p className="error">{setup.error.message}</p><button onClick={()=>setup.refetch()}>重试</button></div></div>;
  if(setup.data?.required||!session.data){
   const initial=setup.data?.required;
-  return <AuthPage initial={!!initial} busy={busy} error={error} onSubmit={async(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const data=new FormData(e.currentTarget);setBusy(true);setError('');try{const body={username:String(data.get('username')),password:String(data.get('password')),...(initial?{setup_token:String(data.get('setup_token')).trim()}:{})};const s=await api<Session>(initial?'/setup':'/login','POST',body);setCsrf(s.csrf);cache.setQueryData(['setup'],{required:false});cache.setQueryData(['session'],s);}catch(e){setError((e as Error).message);}finally{setBusy(false);}}}/>;
+  return <AuthPage initial={!!initial} busy={busy} error={error} keyboardOpen={keyboardOpen} onSubmit={async(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const data=new FormData(e.currentTarget);setBusy(true);setError('');try{const body={username:String(data.get('username')),password:String(data.get('password')),...(initial?{setup_token:String(data.get('setup_token')).trim()}:{})};const s=await api<Session>(initial?'/setup':'/login','POST',body);setCsrf(s.csrf);cache.setQueryData(['setup'],{required:false});cache.setQueryData(['session'],s);}catch(e){setError((e as Error).message);}finally{setBusy(false);}}}/>;
  }
  const user=session.data.user,admin=user.role==='admin';
  const links=navigationGroups(admin).flatMap(group=>group.links);
- return <div className="app-shell"><Sidebar user={user} busy={busy} onLogout={()=>run(async()=>{await api('/logout','POST');setCsrf('');cache.clear();})}/><div className="workspace"><header><span>映你所寻，序你所藏</span><span className="badge">{admin?'管理员工作空间':'我的订阅空间'}</span></header><main>{error&&!dialog&&<div className="error" role="alert">{error}</div>}<Routes><Route path="/overview" element={admin?<OverviewPage/>:<PersonalOverviewPage/>}/><Route path="/douban/:kind/:id" element={<MediaDetailPage source="douban" admin={admin} open={setDialog} busy={busy}/>}/><Route path="/discover" element={<DiscoverPage/>}/><Route path="/media/:kind/:id" element={<MediaDetailPage admin={admin} open={setDialog} busy={busy}/>}/>
+ return <div className={'app-shell'+(mobileLayout?' app-shell--mobile':'')+(keyboardOpen?' is-keyboard-open':'')}><div className="app-safe-top" aria-hidden="true"/><div className="app-safe-bottom" aria-hidden="true"/><Sidebar user={user} busy={busy} onLogout={()=>run(async()=>{await api('/logout','POST');setCsrf('');cache.clear();})}/><div className="workspace"><header><span>映你所寻，序你所藏</span><span className="badge">{admin?'管理员工作空间':'我的订阅空间'}</span></header><main>{error&&!dialog&&<div className="error" role="alert">{error}</div>}<Routes><Route path="/overview" element={admin?<OverviewPage/>:<PersonalOverviewPage/>}/><Route path="/douban/:kind/:id" element={<MediaDetailPage source="douban" admin={admin} open={setDialog} busy={busy}/>}/><Route path="/discover" element={<DiscoverPage/>}/><Route path="/media/:kind/:id" element={<MediaDetailPage admin={admin} open={setDialog} busy={busy}/>}/>
   <Route path="/library/:id?" element={<LibraryPage/>}/>
   <Route path="/search" element={<Navigate to="/discover" replace/>}/>
   <Route path="/subscriptions" element={<Subscriptions admin={admin} busy={busy} run={run} open={setDialog}/>}/>
@@ -68,8 +72,8 @@ export default function App(){
 function ConnectionSettings(props:Actions){
  const {section}=useParams();
  if(!section)return <Navigate to="/settings/drive115" replace/>;
- if(!['drive115','tmdb','telegram','emby','re0'].includes(section))return <Navigate to="/settings/drive115" replace/>;
- return <><p className="settings-context">管理 / 连接设置</p><nav className="workspace-tabs" aria-label="连接设置分类">{[['drive115','115 网盘'],['tmdb','TMDB 元数据'],['telegram','TG 通知'],['emby','Emby 服务'],['re0','RE0 资源']].map(([key,label])=><NavLink key={key} to={'/settings/'+key} className={({isActive})=>isActive||section===key?'active':''}>{label}</NavLink>)}</nav>{section==='drive115'?<Drive115Page/>:section==='tmdb'?<TMDB {...props}/>:section==='telegram'?<TelegramNotificationsPage/>:section==='re0'?<Re0Page/>:<EmbyPage {...props}/>}</>;
+ if(!['drive115','tmdb','telegram','emby','re0','access'].includes(section))return <Navigate to="/settings/drive115" replace/>;
+ return <><p className="settings-context">管理 / 连接设置</p><nav className="workspace-tabs" aria-label="连接设置分类">{[['drive115','115 网盘'],['tmdb','TMDB 元数据'],['telegram','TG 通知'],['emby','Emby 服务'],['re0','RE0 资源'],['access','访问与反代']].map(([key,label])=><NavLink key={key} to={'/settings/'+key} className={({isActive})=>isActive||section===key?'active':''}>{label}</NavLink>)}</nav>{section==='drive115'?<Drive115Page/>:section==='tmdb'?<TMDB {...props}/>:section==='telegram'?<TelegramNotificationsPage/>:section==='re0'?<Re0Page/>:section==='access'?<AccessSettings/>:<EmbyPage {...props}/>}</>;
 }
 function ProcessingWorkspace(props:Actions){
  const {section}=useParams();

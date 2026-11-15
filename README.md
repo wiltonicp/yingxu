@@ -8,10 +8,10 @@
 <p align="center">面向个人服务器与 NAS 的媒体发现、订阅与入库管理工具。</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.3.1-2563eb?style=flat-square" alt="版本 1.3.1" />
+  <img src="https://img.shields.io/badge/version-1.3.2-2563eb?style=flat-square" alt="版本 1.3.2" />
   <img src="https://img.shields.io/badge/platform-Linux%20amd64-334155?style=flat-square" alt="Linux amd64" />
   <img src="https://img.shields.io/badge/deploy-Docker-2496ed?style=flat-square&amp;logo=docker&amp;logoColor=white" alt="Docker 部署" />
-  <img src="https://img.shields.io/badge/DockerHub-v1.3.1-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.3.1" />
+  <img src="https://img.shields.io/badge/DockerHub-v1.3.2-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.3.2" />
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@
 
 **发现 / 订阅 → 资源匹配 → 115 核对入库 → 整理刮削 → STRM / NFO → 媒体服务**
 
-> **v1.3.1 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
+> **v1.3.2 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
 
 ## 主要功能
 
@@ -47,7 +47,7 @@
 
 ## 支持环境
 
-| 项目 | v1.3.1 目标 |
+| 项目 | v1.3.2 目标 |
 | --- | --- |
 | 部署方式 | Docker Engine + Docker Compose 插件 |
 | CPU 架构 | Linux x86-64 / `linux/amd64` |
@@ -59,7 +59,7 @@
 
 ## 快速开始
 
-镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.3.1`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.3.1`。
+镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.3.2`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.3.2`。
 
 部署前请确认：
 
@@ -131,13 +131,23 @@ docker exec yingxu-v100 cat /app/data/bootstrap.key
 
 ### 反向代理
 
-使用 HTTPS 域名访问时，在 Compose 的 `environment` 中增加实际浏览器入口，例如：
+Lucky、Nginx 等 TLS 反代建议保留浏览器原始 `Host`，并转发正确的 `X-Forwarded-Proto`。即使后端实际使用 HTTP，同一 Host 的 HTTPS 来源也能正常校验，不需要为每个域名改代码。
+
+若反代把 Host 改成了内部 IP，先从内网 IP 登录映序，进入 **「连接设置 → 访问与反代」**，在「允许的访问地址」中每行添加一个实际入口，例如 `https://media.example.com` 或 `https://media.example.net:8443`。支持多个入口，保存后即时生效；不支持通配符、路径或参数，不会关闭 CSRF 保护。
+
+也可在 Compose 的 `environment` 中显式设置入口：
 
 ```yaml
 YINGXU_WEB_ORIGIN: https://media.example.com
 ```
 
-填写准确的协议、域名及端口，不包含路径。直接通过 HTTP 的 3008 端口访问时，通常无需设置该项；配置后应与实际浏览器入口一致。反向代理应转发整个 Web 服务和 `/api`，不要只转发前端页面。播放服务地址需设置为媒体服务器或播放器实际可访问的地址。
+环境变量和后台保存的可信来源同时生效。反代应转发整个 Web 服务和 `/api`，不要只转发前端页面。访问入口与 STRM 播放地址分别管理，配置域名不会自动改写已有 STRM。程序不信任任意客户端伪造的 `X-Forwarded-Host`。
+
+## 手机与 iPhone 使用
+
+手机自动使用独立的简洁登录页，桌面保留原布局；手机横屏仍使用手机布局。登录背景使用真实电影海报墙，海报为本地静态前端资源，不依赖未登录的 TMDB API 请求；公开来源清单见 `frontend/public/login-posters/posters.json`。适配顶部安全区、灵动岛周围背景、底部 Home 指示条、弹窗和键盘。
+
+在 Safari 中打开映序，选择「分享 → 添加到主屏幕」，图标使用当前映序 Logo。已有快捷方式若仍是旧图标或旧状态栏表现，请删除后重新添加。iOS 主屏幕模式采用透明状态栏，登录海报墙延伸到顶部；登录后的顶部安全区使用与状态文字匹配的背景。主屏幕模式是否可用取决于浏览器和部署环境；不提供离线媒体访问，也不缓存登录或业务 API。
 
 ## 首次配置
 
@@ -158,6 +168,8 @@ TG 通知的 Bot Token/用户 ID 仅用于可选通知；公开频道采集不�
 2. Emby 客户端改为连接 `http://映序服务器:18099`，使用原 Emby 账号登录；修改端口后使用对应端口。
 3. 对映序签名 STRM，反代核对当前 Emby 用户及媒体播放权限，再按播放器 User-Agent 获取115临时地址并302跳转。不会拿管理员安装密钥替用户播放。
 4. 普通媒体、转码请求、媒体控制和 WebSocket 仍由原 Emby 处理；302 不提供转码能力，客户端需支持原始视频格式。
+
+**升级后请从反代入口退出并重新登录一次**，建立当前用户会话绑定。兼容 Emby 4.8.11.0 的用户鉴权，不使用 `/Users/Me`，也不用管理密钥代替用户播放。客户端仍使用自己的 Emby 用户令牌访问媒体。
 
 反代不代管 Emby 的媒体目录挂载。仅接管映序生成且签名有效的 STRM，以及下文明确支持的旧版 `/play115/` 链接；不自动读取任意本地 STRM 或转换其他第三方网盘链接。不要让反代端口与映序主服务、Emby 上游或其他服务冲突。
 
@@ -269,3 +281,6 @@ docker compose logs --tail=100 yingxu
 ## 反馈
 
 请通过 [GitHub Issues](https://github.com/wiltonicp/yingxu/issues) 提交问题，注明页面版本、镜像标签、部署架构、复现步骤及脱敏错误信息。不要粘贴密码、Cookie、初始化口令、API Key、私钥或带签名的播放链接。
+
+### 剧集入库通知合并
+同一轮整理中，同一部剧同一季的多集入库合并为一条海报通知，展示连续集范围或不连续集号；只有本批集号完整覆盖已确认的全季集数才显示“全季已入库”。不同剧、不同季、电影保持独立通知，保留文件级去重，发送结果不明不重复发送。

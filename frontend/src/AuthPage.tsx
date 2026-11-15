@@ -4,8 +4,15 @@ import {Brand} from './Brand';
 import {VersionBadge} from './VersionBadge';
 import {Loading} from './Loading';
 import './AuthPage.css';
+import {MobileAuthPage} from './MobileAuthPage';
+import {useMobileAuth} from './authDevice';
 
-export function AuthPage({initial,busy,error,onSubmit}:{initial:boolean;busy:boolean;error:string;onSubmit:(e:FormEvent<HTMLFormElement>)=>Promise<void>}){
+export type AuthPageProps={initial:boolean;busy:boolean;error:string;keyboardOpen?:boolean;onSubmit:(e:FormEvent<HTMLFormElement>)=>Promise<void>};
+export function AuthPage(props:AuthPageProps){
+ const mobile=useMobileAuth();
+ return mobile?<MobileAuthPage {...props}/>:<DesktopAuthPage {...props}/>;
+}
+function DesktopAuthPage({initial,busy,error,onSubmit}:AuthPageProps){
  const [visible,setVisible]=useState(false);
  const submitting=useRef(false);
  return <div className="auth-entry"><div className="auth-entry-frame">

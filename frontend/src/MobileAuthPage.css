@@ -1,0 +1,46 @@
+.phone-auth-page{position:relative;isolation:isolate;min-height:100svh;min-height:100dvh;min-height:var(--app-visual-height,100dvh);display:flex;justify-content:center;padding:calc(clamp(64px,12svh,118px) + env(safe-area-inset-top,0px)) max(30px,env(safe-area-inset-right,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(30px,env(safe-area-inset-left,0px));background:#14283e;color:#fff;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.phone-auth-wall{position:fixed;z-index:-2;left:50%;top:50lvh;width:150vw;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;transform:translate(-50%,-50%) rotate(-11deg);pointer-events:none}
+.phone-auth-wall img{display:block;width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;border-radius:10px;box-shadow:0 4px 15px #07152566}
+.phone-auth-page::before{content:'';position:fixed;z-index:-1;inset:0;min-height:100vh;height:100lvh;background:linear-gradient(180deg,#071829a6 0%,#10283c70 40%,#071b2e80 70%,#061626bb 100%);pointer-events:none}
+@media(orientation:landscape){.phone-auth-wall{grid-template-columns:repeat(6,minmax(0,1fr));width:135vw}}
+.phone-auth-inner{width:100%;max-width:360px;display:flex;flex-direction:column;min-width:0}
+.phone-auth-brand{display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;margin:0 0 clamp(70px,13svh,118px)}
+.phone-auth-brand img{display:block;align-self:center;margin-inline:auto;width:84px;height:84px;flex:none;border-radius:24px;box-shadow:0 12px 35px #041b3540,0 0 0 1px #ffffff29}
+.phone-auth-brand p{margin:20px 0 0;color:#fff;font-size:18px;font-weight:550;letter-spacing:.025em;line-height:1.6;text-shadow:0 1px 12px #071c4159;white-space:pre;text-align:center;width:100%}
+.phone-auth-content{padding:0;margin:0}
+.phone-auth-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.phone-auth-setup-title{font-size:21px;line-height:1.5;text-align:center;font-weight:500;margin:0 0 22px;color:#fff;text-shadow:0 1px 8px #102b4560}
+.phone-auth-content fieldset{padding:0;margin:0;border:0;min-width:0}
+.phone-auth-content .phone-auth-label{display:block;margin:0 0 22px;font-size:14px;font-weight:400;color:#fff}
+.phone-auth-content .phone-auth-label:last-of-type{margin-bottom:0}
+.phone-auth-field{display:grid;grid-template-columns:46px minmax(0,1fr) 46px;align-items:center;min-height:56px;margin:0;background:#ffffffe0;border:1px solid #ffffffb5;border-radius:17px;box-shadow:0 5px 20px #0a213819,inset 0 1px 0 #fff8;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transition:background-color .16s ease,border-color .16s ease}
+.phone-auth-field>svg{grid-column:1;grid-row:1;display:block;justify-self:center;color:#6b849d;pointer-events:none}
+.phone-auth-content .phone-auth-field input{grid-column:2;grid-row:1;width:100%;height:54px;min-height:54px;margin:0;padding:0;border:0;border-radius:0;background:transparent;color:#213c56;outline:none;box-shadow:none;font-size:16px;line-height:normal;appearance:none;-webkit-appearance:none;transition:none}
+.phone-auth-field input::placeholder{font-size:16px;color:#7a8da1;font-weight:400}
+.phone-auth-field:focus-within{background:#ffffffed;border-color:#fff;outline:3px solid #cde5ff40}
+.phone-auth-content .phone-auth-field input:focus{outline:none;box-shadow:none;border:0}
+.phone-auth-content .phone-auth-eye{grid-column:3;grid-row:1;width:44px;height:44px;min-height:44px;margin:0;padding:0;display:grid;place-items:center;border:0;border-radius:12px;color:#68829e;background:transparent;box-shadow:none;touch-action:manipulation}
+.phone-auth-eye>svg{display:block}
+.phone-auth-page button{-webkit-tap-highlight-color:transparent}
+.phone-auth-label small{display:block;margin:10px 4px 0;color:#f3f7fd;font-size:12px;line-height:1.7;font-weight:400;text-shadow:0 1px 6px #102b4580;overflow-wrap:anywhere}
+.phone-auth-label code{font-size:12px}
+.phone-auth-content .phone-auth-submit{width:100%;height:56px;min-height:56px;margin:42px 0 0;padding:0 18px;display:flex;justify-content:center;align-items:center;border:1px solid #ffffff1c;border-radius:17px;background:#1476ed;color:#fff;box-shadow:0 8px 25px #041d4933,inset 0 1px 0 #ffffff21;font-size:18px;font-weight:550;letter-spacing:.12em;touch-action:manipulation;transform:none;transition:background-color .15s ease}
+.phone-auth-submit:not(:disabled):active{background-color:#0d69da;transform:none}
+.phone-auth-eye:focus-visible,.phone-auth-submit:focus-visible{outline:3px solid #d9ebffc4;outline-offset:3px}
+.phone-auth-error{padding:12px 14px;margin:18px 0 -14px;border:1px solid #fff9;border-radius:14px;background:#fff5f5f5;color:#b33f45;font-size:14px;line-height:1.7;overflow-wrap:anywhere}
+.phone-auth-footer{display:flex;justify-content:center;align-items:center;margin-top:auto;padding-top:38px;color:#f3f7fbe0;font-size:12px;line-height:1.5;text-shadow:0 1px 7px #102b4580}
+.phone-auth-footer .app-version{margin:0;padding:0;font-size:12px;font-weight:400;color:inherit;line-height:inherit}
+.phone-auth-page--setup{padding-top:calc(42px + env(safe-area-inset-top,0px))}
+.phone-auth-page--setup .phone-auth-brand{margin-bottom:30px}
+.phone-auth-page--setup .phone-auth-brand img{width:68px;height:68px;border-radius:20px}
+.phone-auth-page--setup .phone-auth-brand p{font-size:16px;margin-top:16px}
+@media(max-height:650px){.phone-auth-page{padding-top:calc(42px + env(safe-area-inset-top,0px))}.phone-auth-brand{margin-bottom:42px}.phone-auth-brand img{width:64px;height:64px;border-radius:19px}.phone-auth-brand p{font-size:16px;margin-top:15px}.phone-auth-content .phone-auth-label{margin-bottom:18px}.phone-auth-content .phone-auth-submit{margin-top:30px}.phone-auth-footer{padding-top:28px}.phone-auth-page--setup{padding-top:calc(25px + env(safe-area-inset-top,0px))}.phone-auth-page--setup .phone-auth-brand{margin-bottom:24px}}
+.phone-auth-page--keyboard{padding-top:calc(24px + env(safe-area-inset-top,0px));padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+.phone-auth-page--keyboard .phone-auth-brand{margin-bottom:24px}
+.phone-auth-page--keyboard .phone-auth-brand img{width:48px;height:48px;border-radius:14px}
+.phone-auth-page--keyboard .phone-auth-brand p{font-size:15px;margin-top:10px}
+.phone-auth-page--keyboard .phone-auth-content .phone-auth-label{margin-bottom:16px}
+.phone-auth-page--keyboard .phone-auth-content .phone-auth-label:last-of-type{margin-bottom:0}
+.phone-auth-page--keyboard .phone-auth-submit{margin-top:24px}
+.phone-auth-page--keyboard .phone-auth-footer{display:none}
+@media(prefers-reduced-motion:reduce){.phone-auth-field,.phone-auth-content .phone-auth-submit{transition:none}}

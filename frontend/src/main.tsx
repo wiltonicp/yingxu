@@ -4,6 +4,7 @@ import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {HashRouter} from 'react-router-dom';
 import App from './App';
 import './style.css';
+import './MobileShell.css';
 
 const client=new QueryClient({defaultOptions:{queries:{retry:false,refetchOnWindowFocus:false}}});
 client.setQueryDefaults(['discover-view'],{gcTime:60*60*1000});

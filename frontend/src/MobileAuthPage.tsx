@@ -4,7 +4,7 @@ import {VersionBadge} from './VersionBadge';
 import {Loading} from './Loading';
 import type {AuthPageProps} from './AuthPage';
 import './MobileAuthPage.css';
-import {LoginPosterWall} from './LoginPosterWall';
+import {LoginBackdrop} from './LoginBackdrop';
 
 /** Phone-specific layout; the API, CSRF and session handler are shared with desktop. */
 export function MobileAuthPage({initial,busy,error,keyboardOpen=false,onSubmit}:AuthPageProps){
@@ -15,7 +15,7 @@ export function MobileAuthPage({initial,busy,error,keyboardOpen=false,onSubmit}:
   if(meta)meta.content='#14283e';document.documentElement.style.backgroundColor='#14283e';document.body.style.backgroundColor='#14283e';
   return()=>{if(meta&&oldColor!==undefined)meta.content=oldColor;document.documentElement.style.backgroundColor=oldRoot;document.body.style.backgroundColor=oldBody;};
  },[]);
- return <main className={'phone-auth-page'+(initial?' phone-auth-page--setup':'')+(keyboardOpen?' phone-auth-page--keyboard':'')} data-auth-layout="mobile"><LoginPosterWall/><div className="phone-auth-inner">
+ return <main className={'phone-auth-page'+(initial?' phone-auth-page--setup':'')+(keyboardOpen?' phone-auth-page--keyboard':'')} data-auth-layout="mobile"><LoginBackdrop/><div className="phone-auth-inner">
   <div className="phone-auth-brand"><img src="/yingxu-logo.svg?v=3" alt="映序 Logo" width="84" height="84"/><p>映你所寻   序你所藏</p></div>
   <section className="phone-auth-content" aria-labelledby="phone-auth-title"><h1 id="phone-auth-title" className={initial?'phone-auth-setup-title':'phone-auth-sr-only'}>{initial?'创建管理员':'登录映序'}</h1>
    <form aria-label={initial?'创建管理员账号':'登录映序'} onSubmit={async e=>{e.preventDefault();if(busy||submitting.current)return;submitting.current=true;try{await onSubmit(e);}finally{submitting.current=false;}}}>

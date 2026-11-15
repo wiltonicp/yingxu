@@ -8,10 +8,10 @@
 <p align="center">面向个人服务器与 NAS 的媒体发现、订阅与入库管理工具。</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.3.3-2563eb?style=flat-square" alt="版本 1.3.3" />
+  <img src="https://img.shields.io/badge/version-1.3.4-2563eb?style=flat-square" alt="版本 1.3.4" />
   <img src="https://img.shields.io/badge/platform-Linux%20amd64-334155?style=flat-square" alt="Linux amd64" />
   <img src="https://img.shields.io/badge/deploy-Docker-2496ed?style=flat-square&amp;logo=docker&amp;logoColor=white" alt="Docker 部署" />
-  <img src="https://img.shields.io/badge/DockerHub-v1.3.3-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.3.3" />
+  <img src="https://img.shields.io/badge/DockerHub-v1.3.4-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.3.4" />
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@
 
 **发现 / 订阅 → 资源匹配 → 115 核对入库 → 整理刮削 → STRM / NFO → 媒体服务**
 
-> **v1.3.3 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
+> **v1.3.4 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
 
 ## 主要功能
 
@@ -47,7 +47,7 @@
 
 ## 支持环境
 
-| 项目 | v1.3.3 目标 |
+| 项目 | v1.3.4 目标 |
 | --- | --- |
 | 部署方式 | Docker Engine + Docker Compose 插件 |
 | CPU 架构 | Linux x86-64 / `linux/amd64` |
@@ -59,7 +59,7 @@
 
 ## 快速开始
 
-镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.3.3`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.3.3`。
+镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.3.4`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.3.4`。
 
 部署前请确认：
 
@@ -145,9 +145,9 @@ YINGXU_WEB_ORIGIN: https://media.example.com
 
 ## 手机与 iPhone 使用
 
-手机自动使用独立的简洁登录页，桌面保留原布局；手机横屏仍使用手机布局。登录背景使用真实电影海报墙，海报为本地静态前端资源，不依赖未登录的 TMDB API 请求；公开来源清单见 `frontend/public/login-posters/posters.json`。适配顶部安全区、灵动岛周围背景、底部 Home 指示条、弹窗和键盘。
+手机自动使用独立的简洁登录页，桌面使用居中浅色毛玻璃表单；手机横屏仍使用手机布局。登录背景采用本地内置的单张高清电影横版图，每次打开随机选择、每5分钟淡入切换，页面隐藏时暂停；不依赖未登录的 TMDB API 请求。公开来源清单见 `frontend/public/login-backdrops/backdrops.json`。适配顶部安全区、灵动岛周围背景、底部 Home 指示条、弹窗和键盘。
 
-在 Safari 中打开映序，选择「分享 → 添加到主屏幕」，图标使用当前映序 Logo。已有快捷方式若仍是旧图标或旧状态栏表现，请删除后重新添加。iOS 主屏幕模式采用透明状态栏，登录海报墙延伸到顶部；登录后的顶部安全区使用与状态文字匹配的背景。主屏幕模式是否可用取决于浏览器和部署环境；不提供离线媒体访问，也不缓存登录或业务 API。
+在 Safari 中打开映序，选择「分享 → 添加到主屏幕」，图标使用当前映序 Logo。已有快捷方式若仍是旧图标或旧状态栏表现，请删除后重新添加。iOS 主屏幕模式采用透明状态栏，登录背景延伸到顶部；登录后的顶部安全区使用与状态文字匹配的背景。主屏幕模式是否可用取决于浏览器和部署环境；不提供离线媒体访问，也不缓存登录或业务 API。
 
 ## 首次配置
 
@@ -285,10 +285,14 @@ docker compose logs --tail=100 yingxu
 ### 剧集入库通知合并
 同一轮整理中，同一部剧同一季的多集入库合并为一条海报通知，展示连续集范围或不连续集号；只有本批集号完整覆盖已确认的全季集数才显示“全季已入库”。不同剧、不同季、电影保持独立通知，保留文件级去重，发送结果不明不重复发送。
 
-## v1.3.3 本次更新
+## 订阅与任务功能
 
 - 订阅跨来源按季、集核对已有文件，115 只接缺集，RE0 解锁前先检查，未知集号等待确认。
 - 任务中心支持操作时间和详情；遗留整理失败支持忽略与恢复，历史保留，不操作网盘文件。
-- 手机登录改为系统字体、透明下划线输入和低饱和蓝色按钮，海报墙与 iPhone 适配保留。
+- 手机登录改为系统字体、透明下划线输入和低饱和蓝色按钮，iPhone 适配保留。
 
 升级请等待写入任务结束，保留原 data（数据库与 credentials.key）及 library 挂载，然后执行 `docker compose pull && docker compose up -d`。历史重复媒体不自动删除。
+
+## v1.3.4 界面更新
+
+统一工作空间按钮和表单样式，优化手机布局、搜索框、加载提示、筛选数量和演员滚动；整理记录宽屏四列、同排等高。电脑登录采用浅色毛玻璃，电脑/手机均使用单张本地高清电影背景，每次打开随机、每5分钟切换，页面隐藏时暂停。默认端口、数据目录和已有业务策略不变。

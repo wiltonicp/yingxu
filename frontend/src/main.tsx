@@ -5,6 +5,7 @@ import {HashRouter} from 'react-router-dom';
 import App from './App';
 import './style.css';
 import './MobileShell.css';
+import './WorkspacePolish.css';
 
 const client=new QueryClient({defaultOptions:{queries:{retry:false,refetchOnWindowFocus:false}}});
 client.setQueryDefaults(['discover-view'],{gcTime:60*60*1000});

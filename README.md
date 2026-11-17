@@ -8,10 +8,10 @@
 <p align="center">面向个人服务器与 NAS 的媒体发现、订阅与入库管理工具。</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.3.7-2563eb?style=flat-square" alt="版本 1.3.7" />
+  <img src="https://img.shields.io/badge/version-1.3.8-2563eb?style=flat-square" alt="版本 1.3.8" />
   <img src="https://img.shields.io/badge/platform-Linux%20amd64-334155?style=flat-square" alt="Linux amd64" />
   <img src="https://img.shields.io/badge/deploy-Docker-2496ed?style=flat-square&amp;logo=docker&amp;logoColor=white" alt="Docker 部署" />
-  <img src="https://img.shields.io/badge/DockerHub-v1.3.7-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.3.7" />
+  <img src="https://img.shields.io/badge/DockerHub-v1.3.8-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.3.8" />
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@
 
 **发现 / 订阅 → 资源匹配 → 115 核对入库 → 整理刮削 → STRM / NFO → 媒体服务**
 
-> **v1.3.7 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
+> **v1.3.8 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
 
 ## 主要功能
 
@@ -47,7 +47,7 @@
 
 ## 支持环境
 
-| 项目 | v1.3.7 目标 |
+| 项目 | v1.3.8 目标 |
 | --- | --- |
 | 部署方式 | Docker Engine + Docker Compose 插件 |
 | CPU 架构 | Linux x86-64 / `linux/amd64` |
@@ -59,7 +59,7 @@
 
 ## 快速开始
 
-镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.3.7`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.3.7`。
+镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.3.8`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.3.8`。
 
 部署前请确认：
 
@@ -292,6 +292,14 @@ docker compose logs --tail=100 yingxu
 - 手机登录改为系统字体、透明下划线输入和低饱和蓝色按钮，iPhone 适配保留。
 
 升级请等待写入任务结束，保留原 data（数据库与 credentials.key）及 library 挂载，然后执行 `docker compose pull && docker compose up -d`。历史重复媒体不自动删除。
+
+## v1.3.8 整理记录与内部更新输出修复
+
+- 整理记录按文件只显示最新结果，状态/类别筛选、分页与统计同样按最新文件计算；连续同错误在详情折叠累计，旧审计历史保留。
+- 固定STRM输出基础目录，内部更新不再将索引误写到data/updates版本树。
+- 合集资源按收到清单中各文件的实际整理回执累计，不再要求五部电影都等于资源绑定的第一部；订阅影视身份核对不变。
+- STRM输出页新增“只读核对旧输出 → 确认恢复本地索引”：校验播放签名、账号、NFO类别/TMDB及目标内容，仅复制，不覆盖不同内容、不删除源文件、不操作115。
+- 旧版本误写的输出需升级后显式恢复；不要删除旧版本目录，不要重复转存或移动115文件。
 
 ## v1.3.7 普通用户海报权限修复
 

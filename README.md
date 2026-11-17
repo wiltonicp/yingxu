@@ -8,10 +8,10 @@
 <p align="center">面向个人服务器与 NAS 的媒体发现、订阅与入库管理工具。</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.3.5-2563eb?style=flat-square" alt="版本 1.3.5" />
+  <img src="https://img.shields.io/badge/version-1.3.6-2563eb?style=flat-square" alt="版本 1.3.6" />
   <img src="https://img.shields.io/badge/platform-Linux%20amd64-334155?style=flat-square" alt="Linux amd64" />
   <img src="https://img.shields.io/badge/deploy-Docker-2496ed?style=flat-square&amp;logo=docker&amp;logoColor=white" alt="Docker 部署" />
-  <img src="https://img.shields.io/badge/DockerHub-v1.3.5-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.3.5" />
+  <img src="https://img.shields.io/badge/DockerHub-v1.3.6-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.3.6" />
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@
 
 **发现 / 订阅 → 资源匹配 → 115 核对入库 → 整理刮削 → STRM / NFO → 媒体服务**
 
-> **v1.3.5 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
+> **v1.3.6 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
 
 ## 主要功能
 
@@ -47,7 +47,7 @@
 
 ## 支持环境
 
-| 项目 | v1.3.5 目标 |
+| 项目 | v1.3.6 目标 |
 | --- | --- |
 | 部署方式 | Docker Engine + Docker Compose 插件 |
 | CPU 架构 | Linux x86-64 / `linux/amd64` |
@@ -59,7 +59,7 @@
 
 ## 快速开始
 
-镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.3.5`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.3.5`。
+镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.3.6`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.3.6`。
 
 部署前请确认：
 
@@ -292,6 +292,15 @@ docker compose logs --tail=100 yingxu
 - 手机登录改为系统字体、透明下划线输入和低饱和蓝色按钮，iPhone 适配保留。
 
 升级请等待写入任务结束，保留原 data（数据库与 credentials.key）及 library 挂载，然后执行 `docker compose pull && docker compose up -d`。历史重复媒体不自动删除。
+
+## v1.3.6 单容器内部更新
+
+- 新增超管新版检测弹框，可更新、忽略此版本或稍后提醒；连接设置增加“版本更新”页，支持手动检查与更新。
+- 同一个容器内切换程序版本，无需额外更新器容器或Docker socket。先下载校验，等待现有任务结束，备份数据库和配套密钥，再切换业务进程。
+- 新版启动验证失败会恢复旧程序与升级前数据库；保留更新进度、失败原因及中断恢复记录。已经开放业务写入后，不自动覆盖新数据。
+- 镜像内置发布公钥；更新包使用Ed25519签名并核对运行环境、版本和SHA256，不支持内部安装的版本明确提示升级镜像。
+- **1.3.5及更早版本需先通过Docker正常升级一次至1.3.6**。首次部署方式不变；后续兼容的正式版本可在页面确认后内部更新，不静默安装。基础环境变化仍需镜像升级。
+- 数据挂载需要允许加载原生模块，保持原UID和data/library挂载；只读或noexec挂载请使用镜像升级。内部更新有短暂业务重启，不是零中断。
 
 ## v1.3.5 修复
 

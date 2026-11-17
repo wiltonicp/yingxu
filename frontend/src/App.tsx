@@ -1,3 +1,4 @@
+import {SystemUpdates,UpdateNotification} from './SystemUpdates';
 import {ProcessingReceiptActions} from './ProcessingReceiptActions';
 import {AccessSettings} from './AccessSettings';
 import {DEFAULT_WASHING_KEYS,policyUpdatePayload} from './processingPolicyForm';
@@ -61,7 +62,7 @@ export default function App(){
  }
  const user=session.data.user,admin=user.role==='admin';
  const links=navigationGroups(admin).flatMap(group=>group.links);
- return <div className={'app-shell'+(mobileLayout?' app-shell--mobile':'')+(keyboardOpen?' is-keyboard-open':'')}><div className="app-safe-top" aria-hidden="true"/><div className="app-safe-bottom" aria-hidden="true"/><Sidebar user={user} busy={busy} onLogout={()=>run(async()=>{await api('/logout','POST');setCsrf('');cache.clear();})}/><div className="workspace"><header><span>映你所寻，序你所藏</span><span className="badge">{admin?'管理员工作空间':'我的订阅空间'}</span></header><main className={'workspace-page'+(location.pathname==='/processing-records'?' workspace-page--records':'')} data-page={location.pathname.split('/')[1]}>{error&&!dialog&&<div className="error" role="alert">{error}</div>}<Routes><Route path="/overview" element={admin?<OverviewPage/>:<PersonalOverviewPage/>}/><Route path="/douban/:kind/:id" element={<MediaDetailPage source="douban" admin={admin} open={setDialog} busy={busy}/>}/><Route path="/discover" element={<DiscoverPage/>}/><Route path="/media/:kind/:id" element={<MediaDetailPage admin={admin} open={setDialog} busy={busy}/>}/>
+ return <div className={'app-shell'+(mobileLayout?' app-shell--mobile':'')+(keyboardOpen?' is-keyboard-open':'')}><div className="app-safe-top" aria-hidden="true"/><div className="app-safe-bottom" aria-hidden="true"/><Sidebar user={user} busy={busy} onLogout={()=>run(async()=>{await api('/logout','POST');setCsrf('');cache.clear();})}/><div className="workspace">{admin&&<UpdateNotification/>}<header><span>映你所寻，序你所藏</span><span className="badge">{admin?'管理员工作空间':'我的订阅空间'}</span></header><main className={'workspace-page'+(location.pathname==='/processing-records'?' workspace-page--records':'')} data-page={location.pathname.split('/')[1]}>{error&&!dialog&&<div className="error" role="alert">{error}</div>}<Routes><Route path="/overview" element={admin?<OverviewPage/>:<PersonalOverviewPage/>}/><Route path="/douban/:kind/:id" element={<MediaDetailPage source="douban" admin={admin} open={setDialog} busy={busy}/>}/><Route path="/discover" element={<DiscoverPage/>}/><Route path="/media/:kind/:id" element={<MediaDetailPage admin={admin} open={setDialog} busy={busy}/>}/>
   <Route path="/library/:id?" element={<LibraryPage/>}/>
   <Route path="/search" element={<Navigate to="/discover" replace/>}/>
   <Route path="/subscriptions" element={<Subscriptions admin={admin} busy={busy} run={run} open={setDialog}/>}/>
@@ -76,8 +77,8 @@ function ConnectionSettings(props:Actions){
  const tabs=useRef<HTMLElement>(null);
  useEffect(()=>{tabs.current?.querySelector('.active')?.scrollIntoView({block:'nearest',inline:'center'});},[section]);
  if(!section)return <Navigate to="/settings/drive115" replace/>;
- if(!['drive115','tmdb','telegram','emby','re0','access'].includes(section))return <Navigate to="/settings/drive115" replace/>;
- return <><p className="settings-context">管理 / 连接设置</p><nav ref={tabs} className="workspace-tabs" aria-label="连接设置分类">{[['drive115','115 网盘'],['tmdb','TMDB 元数据'],['telegram','TG 通知'],['emby','Emby 服务'],['re0','RE0 资源'],['access','访问与反代']].map(([key,label])=><NavLink key={key} to={'/settings/'+key} className={({isActive})=>isActive||section===key?'active':''}>{label}</NavLink>)}</nav>{section==='drive115'?<Drive115Page/>:section==='tmdb'?<TMDB {...props}/>:section==='telegram'?<TelegramNotificationsPage/>:section==='re0'?<Re0Page/>:section==='access'?<AccessSettings/>:<EmbyPage {...props}/>}</>;
+ if(!['drive115','tmdb','telegram','emby','re0','access','updates'].includes(section))return <Navigate to="/settings/drive115" replace/>;
+ return <><p className="settings-context">管理 / 连接设置</p><nav ref={tabs} className="workspace-tabs" aria-label="连接设置分类">{[['drive115','115 网盘'],['tmdb','TMDB 元数据'],['telegram','TG 通知'],['emby','Emby 服务'],['re0','RE0 资源'],['access','访问与反代'],['updates','版本更新']].map(([key,label])=><NavLink key={key} to={'/settings/'+key} className={({isActive})=>isActive||section===key?'active':''}>{label}</NavLink>)}</nav>{section==='drive115'?<Drive115Page/>:section==='tmdb'?<TMDB {...props}/>:section==='telegram'?<TelegramNotificationsPage/>:section==='re0'?<Re0Page/>:section==='updates'?<SystemUpdates/>:section==='access'?<AccessSettings/>:<EmbyPage {...props}/>}</>;
 }
 function ProcessingWorkspace(props:Actions){
  const {section}=useParams();

@@ -8,10 +8,10 @@
 <p align="center">面向个人服务器与 NAS 的媒体发现、订阅与入库管理工具。</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.3.8-2563eb?style=flat-square" alt="版本 1.3.8" />
+  <img src="https://img.shields.io/badge/version-1.3.9-2563eb?style=flat-square" alt="版本 1.3.9" />
   <img src="https://img.shields.io/badge/platform-Linux%20amd64-334155?style=flat-square" alt="Linux amd64" />
   <img src="https://img.shields.io/badge/deploy-Docker-2496ed?style=flat-square&amp;logo=docker&amp;logoColor=white" alt="Docker 部署" />
-  <img src="https://img.shields.io/badge/DockerHub-v1.3.8-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.3.8" />
+  <img src="https://img.shields.io/badge/DockerHub-v1.3.9-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.3.9" />
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@
 
 **发现 / 订阅 → 资源匹配 → 115 核对入库 → 整理刮削 → STRM / NFO → 媒体服务**
 
-> **v1.3.8 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
+> **v1.3.9 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
 
 ## 主要功能
 
@@ -47,7 +47,7 @@
 
 ## 支持环境
 
-| 项目 | v1.3.8 目标 |
+| 项目 | v1.3.9 目标 |
 | --- | --- |
 | 部署方式 | Docker Engine + Docker Compose 插件 |
 | CPU 架构 | Linux x86-64 / `linux/amd64` |
@@ -59,7 +59,7 @@
 
 ## 快速开始
 
-镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.3.8`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.3.8`。
+镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.3.9`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.3.9`。
 
 部署前请确认：
 
@@ -292,6 +292,15 @@ docker compose logs --tail=100 yingxu
 - 手机登录改为系统字体、透明下划线输入和低饱和蓝色按钮，iPhone 适配保留。
 
 升级请等待写入任务结束，保留原 data（数据库与 credentials.key）及 library 挂载，然后执行 `docker compose pull && docker compose up -d`。历史重复媒体不自动删除。
+
+## v1.3.9 影视识别修复与批量整理
+
+- 优先读取文件名与最近媒体目录的TMDB ID，支持官方英文别名及英文翻译。
+- 修复剧集文件名重复年份导致的身份冲突；保留严格年份、季集与真实冲突检查。
+- 合集逐文件独立识别，不继承第一部身份。
+- 整理记录支持跨页多选（最多50个），逐文件只读预览、明确确认后批量整理，各集保留独立集号。
+- 批量确认绑定来源与配置，变化需重新预览；远程结果不确定时停止后续文件，防止重复移动。
+- 本次不放宽媒体访问权限；保留原有STRM固定路径与旧输出恢复功能。
 
 ## v1.3.8 整理记录与内部更新输出修复
 

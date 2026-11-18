@@ -8,10 +8,10 @@
 <p align="center">面向个人服务器与 NAS 的媒体发现、订阅与入库管理工具。</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.3.9-2563eb?style=flat-square" alt="版本 1.3.9" />
+  <img src="https://img.shields.io/badge/version-1.3.10-2563eb?style=flat-square" alt="版本 1.3.10" />
   <img src="https://img.shields.io/badge/platform-Linux%20amd64-334155?style=flat-square" alt="Linux amd64" />
   <img src="https://img.shields.io/badge/deploy-Docker-2496ed?style=flat-square&amp;logo=docker&amp;logoColor=white" alt="Docker 部署" />
-  <img src="https://img.shields.io/badge/DockerHub-v1.3.9-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.3.9" />
+  <img src="https://img.shields.io/badge/DockerHub-v1.3.10-2496ed?style=flat-square&amp;logo=docker" alt="DockerHub 镜像 v1.3.10" />
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@
 
 **发现 / 订阅 → 资源匹配 → 115 核对入库 → 整理刮削 → STRM / NFO → 媒体服务**
 
-> **v1.3.9 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
+> **v1.3.10 已发布**：[DockerHub 镜像](https://hub.docker.com/r/wiltonicp/yingxu/tags)现已支持公开拉取。默认 Web 入口 **3008**，可选 Emby 302 反代入口 **18099**；使用 Linux host 网络，无需端口映射。
 
 ## 主要功能
 
@@ -47,7 +47,7 @@
 
 ## 支持环境
 
-| 项目 | v1.3.9 目标 |
+| 项目 | v1.3.10 目标 |
 | --- | --- |
 | 部署方式 | Docker Engine + Docker Compose 插件 |
 | CPU 架构 | Linux x86-64 / `linux/amd64` |
@@ -59,7 +59,7 @@
 
 ## 快速开始
 
-镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.3.9`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.3.9`。
+镜像提供 **`wiltonicp/yingxu:latest`**（当前最新版）和 **`wiltonicp/yingxu:v1.3.10`**（固定版本）。下方使用 `latest`；需要锁定版本时，将 `image` 改为 `wiltonicp/yingxu:v1.3.10`。
 
 部署前请确认：
 
@@ -292,6 +292,15 @@ docker compose logs --tail=100 yingxu
 - 手机登录改为系统字体、透明下划线输入和低饱和蓝色按钮，iPhone 适配保留。
 
 升级请等待写入任务结束，保留原 data（数据库与 credentials.key）及 library 挂载，然后执行 `docker compose pull && docker compose up -d`。历史重复媒体不自动删除。
+
+## v1.3.10 后台整理与Emby存量对账
+
+- 批量整理支持搜索并选择TMDB影视，保留逐文件身份与季集校验。
+- 单个、批量、立即扫描及继续整理提交为持久后台任务，关闭页面后继续，可跨页查看进度；中断任务不自动重放未知移动。
+- 手动整理成功触发订阅进度补核对，修复旧集数状态滞留；完结且收齐才结束订阅。
+- 启动、新增订阅及定时对照Emby已有/迁移库存，按实际季集集合统计，不按最高集号推断齐全。
+- 转存与RE0解锁前实时查重，已有且满足目标质量的集跳过，混合分享只接收缺集；Emby核对失败不当空库。
+- 保留严格权限、来源、清晰度与真实冲突检查，不自动删除迁移文件。
 
 ## v1.3.9 影视识别修复与批量整理
 

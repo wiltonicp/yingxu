@@ -1,0 +1,9 @@
+import {useEffect,useRef,useState} from 'react';
+import {api,type Media} from './api';
+
+export function MediaIdentitySearch({kind,disabled,onSelect}:{kind:string;disabled:boolean;onSelect:(media:Media)=>void}){
+ const [q,setQ]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),[rows,setRows]=useState<Media[]>([]),revision=useRef(0);
+ useEffect(()=>{revision.current++;setRows([]);setBusy(false);setError('');},[kind]);
+ async function search(){const seq=++revision.current;setBusy(true);setError('');try{const data=await api<{items:Media[]}>('/catalog/browse?q='+encodeURIComponent(q.trim())+'&category='+(kind==='auto'?'all':kind));if(seq===revision.current){setRows(data.items);if(!data.items.length)setError('没有匹配结果，请调整名称或电影/剧集类别。');}}catch(e){if(seq===revision.current)setError((e as Error).message);}finally{if(seq===revision.current)setBusy(false);}}
+ return <section className="record-repair"><h3>搜索并选择共同影视身份</h3><p className="muted">搜索结果复用TMDB目录。选择后仍逐文件核对，合集不同影片请分别选择，不覆盖真实冲突。</p><div className="tmdb-search-form"><input aria-label="批量TMDB关键词" maxLength={100} disabled={disabled} value={q} onChange={e=>{revision.current++;setBusy(false);setQ(e.target.value);setRows([]);}} onKeyDown={e=>{if(e.key==='Enter'){e.preventDefault();if(q.trim())void search();}}} placeholder="输入剧名或电影名，例如青春共体"/><button type="button" disabled={disabled||busy||!q.trim()} onClick={()=>void search()}>{busy?'搜索中…':'搜索TMDB'}</button></div>{error&&<p className="error">{error}</p>}<div className="tmdb-candidate-list">{rows.map(row=><button type="button" className="tmdb-candidate" key={row.media_type+row.tmdb_id} disabled={disabled} onClick={()=>onSelect(row)}>{row.poster&&<img alt="" src={'https://image.tmdb.org/t/p/w92'+row.poster}/>}<span><b>{row.title}</b><small>{row.year} · {row.media_type==='tv'?'剧集':'电影'} · TMDB {row.tmdb_id}</small></span><span className="text-link">选择此影视</span></button>)}</div></section>;
+}

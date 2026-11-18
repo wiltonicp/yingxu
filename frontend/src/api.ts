@@ -1,6 +1,6 @@
 export type User={id:number;username:string;role:'admin'|'user';enabled:boolean};
 export type Media={media_type:'movie'|'tv';tmdb_id:string;title:string;year:string;poster:string};
-export type Subscription={id:number;status:string;quality:string;completion?:{state:string;message?:string;received?:number;expected?:number|null;is_ended?:boolean;missing_count?:number;missing_episodes?:string[]};local_lookup?:{matched_resources:number;queued_jobs:number;completed_jobs:number;waiting_for_new_resources:boolean};media:Media;followers:number;mine:boolean};
+export type Subscription={id:number;status:string;quality:string;completion?:{state:string;message?:string;received?:number;library_received?:number;expected?:number|null;is_ended?:boolean;missing_count?:number;missing_episodes?:string[]};local_lookup?:{matched_resources:number;queued_jobs:number;completed_jobs:number;waiting_for_new_resources:boolean};media:Media;followers:number;mine:boolean};
 export type MediaRequest={id:number;user:string;media:Media;status:string;reason:string;rejection:string;auto_review?:{state:string;reason:string;checked_at:number}|null};
 let csrf='';
 export function setCsrf(token:string){csrf=token;}

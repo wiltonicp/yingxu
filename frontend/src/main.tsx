@@ -6,6 +6,8 @@ import App from './App';
 import './style.css';
 import './MobileShell.css';
 import './WorkspacePolish.css';
+import './Theme.css';
+import './Theme';
 
 const client=new QueryClient({defaultOptions:{queries:{retry:false,refetchOnWindowFocus:false}}});
 client.setQueryDefaults(['discover-view'],{gcTime:60*60*1000});

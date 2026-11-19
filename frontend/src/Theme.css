@@ -1,0 +1,10 @@
+:root{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+.workspace-header-actions{display:flex;align-items:center;gap:12px}
+.theme-chooser{display:flex;align-items:center;gap:8px;margin:0;font-size:13px;white-space:nowrap}
+.theme-chooser select{width:auto;min-height:38px;margin:0;padding:5px 10px}
+.mobile-menu .theme-chooser{margin-bottom:16px}
+.app-shell--mobile .desktop-theme{display:none}
+@media(max-width:760px){.desktop-theme{display:none}}
+:root[data-theme=dark] a:not([class]){color:#93c5fd}
+:root[data-theme=dark] input::placeholder,:root[data-theme=dark] textarea::placeholder{color:#a4b4c9}

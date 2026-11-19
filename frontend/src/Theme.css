@@ -8,3 +8,95 @@
 @media(max-width:760px){.desktop-theme{display:none}}
 :root[data-theme=dark] a:not([class]){color:#93c5fd}
 :root[data-theme=dark] input::placeholder,:root[data-theme=dark] textarea::placeholder{color:#a4b4c9}
+
+.task-center-tabs,.task-shortcut{margin:0 0 16px}
+.task-center-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.task-shortcut a,.task-file-results a{color:light-dark(#235d9d,#a9d2ff)}
+.task-center-tabs [aria-pressed=true],.task-center-panel [aria-pressed=true]{background:light-dark(#e8f2ff,#1c344e);color:light-dark(#20558d,#b3d7ff);border-color:light-dark(#9dbce0,#52799f)}
+.task-file-results{padding-inline-start:1.25rem;overflow-wrap:anywhere}
+.task-file-results li+li{margin-top:.4rem}
+:root[data-theme=dark] :is(button,a,select,input):focus-visible{outline:2px solid #8abaff;outline-offset:3px}
+
+.overview-queue-body .task-shortcut{padding-bottom:10px;border-bottom:1px solid var(--line);font-size:13px}
+
+.header-location,.header-account{display:flex;align-items:center;gap:10px;min-width:0}
+.header-location-group{color:var(--muted);white-space:nowrap}
+.header-location-group>span{margin-inline-start:5px;opacity:.65}
+.header-account-copy{min-width:0}
+.header-account-copy b{display:block;max-width:11rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-account-copy small{margin:0;font-size:11px}
+.header-account .sidebar-avatar{flex:none}
+.app-shell--mobile :is(.header-location-group,.header-account-copy small,.header-account .sidebar-logout){display:none}
+@media(max-width:760px){
+ .header-location-group,.header-account-copy small,.header-account .sidebar-logout{display:none}
+ .header-account-copy b{max-width:34vw}
+}
+
+.header-theme-icon,.header-account-trigger{border:0;background:transparent;box-shadow:none}
+.header-theme-icon{width:40px;min-height:40px;padding:0;border-radius:12px}
+.header-account-trigger{gap:8px;padding:3px 6px;border-radius:14px;anchor-name:--header-account}
+.header-account-trigger b{max-width:min(11rem,34vw);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.header-account-trigger svg{flex:none}
+.header-theme-icon:hover,.header-account-trigger:hover{background:light-dark(#e6eef8,#20344b)}
+.header-account-menu{
+ position:fixed;inset:auto;position-anchor:--header-account;
+ top:anchor(bottom);right:anchor(right);margin:8px 0 0;
+ min-width:156px;padding:8px;border:1px solid var(--line);border-radius:14px;
+ background:light-dark(#fff,#192432);color:inherit;box-shadow:0 12px 32px #0b172533;
+}
+.header-account-role{padding:6px 10px;color:var(--muted);font-size:12px}
+.header-account-menu button{width:100%;justify-content:flex-start;border:0;border-radius:8px;background:transparent;padding:6px 10px}
+.header-account-menu button:hover{background:light-dark(#e6eef8,#20344b)}
+
+.workspace>.workspace-header{
+ padding:8px 20px;
+ background:light-dark(rgba(255,255,255,.54),#191e248a);
+ backdrop-filter:blur(24px) saturate(1.4);
+}
+.header-theme-control .header-theme-icon{anchor-name:--header-theme}
+.header-theme-menu{
+ position:fixed;inset:auto;position-anchor:--header-theme;
+ top:anchor(bottom);right:anchor(right);margin:8px 0 0;
+ padding:12px;border:1px solid var(--line);border-radius:16px;
+ background:light-dark(#f9fbff,#192432);color:inherit;box-shadow:0 12px 32px #0b172533;
+}
+.header-theme-title{font-weight:600;color:var(--muted);margin:0 0 8px}
+.header-theme-options{display:grid;grid-template-columns:repeat(3,minmax(72px,1fr));gap:4px;padding:4px;border:1px solid var(--line);border-radius:12px}
+.header-theme-options button{flex-direction:column;gap:4px;min-height:56px;padding:6px 8px;border:0;border-radius:9px;background:transparent;font-size:12px}
+.header-theme-options button:hover,.header-theme-options button[aria-pressed=true]{background:light-dark(#e7f2ff,#254568);color:light-dark(#185a9d,#c1e0ff)}
+@media(min-width:761px){
+ .workspace .discovery-cinema-hero{min-height:370px}
+ .workspace .discovery-hero-content{padding-top:36px;padding-bottom:46px}
+}
+
+/* Phones use the bottom navigation and More menu instead of desktop chrome. */
+:root[data-theme=dark]{--app-chrome-background:#141c29}
+:root[data-standalone=true]{background-color:var(--app-chrome-background)}
+.app-shell--mobile .workspace>.workspace-header{display:none}
+.app-shell--mobile .workspace>main{
+ min-height:calc(100svh - var(--app-safe-top));
+ padding-top:16px;
+}
+@media(max-width:700px){
+ .workspace>.workspace-header{display:none}
+}
+
+/* Keep the installed Web App's status-area surface out of the document flow. */
+:root[data-standalone=true] .app-shell--mobile .app-safe-top{
+ display:block;
+ height:calc(var(--app-safe-top) + 16px);
+ background:var(--app-chrome-background);
+}
+
+/* iOS rubber-band exposes the root canvas. Match it to the mobile page edge. */
+:root:has(.app-shell--mobile){
+ --app-chrome-background:light-dark(#edf2f8,#151e2b);
+ background-color:var(--app-chrome-background);
+}
+:root:has(.app-shell--mobile) body{
+ background-color:var(--app-chrome-background);
+ background-image:
+  linear-gradient(to bottom,var(--app-chrome-background) 0,transparent 160px),
+  radial-gradient(ellipse at 4% 5%,light-dark(#e6eff9,#162535),transparent 44%),
+  radial-gradient(ellipse at 96% 3%,light-dark(#f0eef7,#1d1731),transparent 40%);
+}

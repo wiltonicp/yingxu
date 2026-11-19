@@ -7,6 +7,7 @@
   <meta name="color-scheme" content="light dark">
   <script>
     (() => {
+      if (navigator.standalone === true || matchMedia('(display-mode: standalone)').matches) document.documentElement.dataset.standalone = 'true';
       let theme = 'light';
       try { theme = localStorage.getItem('yingxu-theme') || 'light'; } catch {}
       document.documentElement.dataset.theme = theme === 'dark' || (theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';

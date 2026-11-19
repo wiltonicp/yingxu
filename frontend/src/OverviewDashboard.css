@@ -1,0 +1,50 @@
+.overview-dashboard{display:grid;gap:clamp(18px,2.3vw,30px)}
+.dashboard-hero{
+ position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:flex-start;justify-content:space-between;
+ gap:16px;padding:clamp(20px,3.2vw,44px);border-radius:24px;border:1px solid light-dark(#ccdef2,#304766);
+ background:radial-gradient(ellipse at 80% 15%,light-dark(#dce7fa,#29294e),transparent 65%),linear-gradient(115deg,light-dark(#f7fbff,#172a40),light-dark(#edf3fb,#182131));
+}
+.dashboard-hero h1{margin:12px 0 5px;font-size:clamp(29px,3vw,44px);font-weight:700;letter-spacing:-.035em}
+.dashboard-hero p{color:var(--muted);margin:0}
+.dashboard-runtime{display:inline-flex;align-items:center;gap:8px;padding:4px 10px;border-radius:20px;background:light-dark(#e8edf6,#253449);font-size:12px}
+.dashboard-runtime i{width:7px;height:7px;border-radius:50%;background:light-dark(#687f9c,#a2b6cf)}
+.dashboard-runtime i[data-running=true]{background:light-dark(#168155,#65d6a1)}
+.dashboard-hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:23px}
+.dashboard-hero-actions .button-link{display:inline-flex;gap:8px;align-items:center}
+.dashboard-hero-art{position:absolute;z-index:-1;right:12%;bottom:-44%;width:clamp(160px,25vw,360px);height:auto;transform:rotate(-17deg);color:light-dark(#5b7eb820,#8eafff17);stroke-width:.65;pointer-events:none}
+.dashboard-refresh{flex:none}
+.dashboard-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.dashboard-metric{
+ --metric-bg:light-dark(#e7f0ff,#253956);--metric-ink:light-dark(#24568e,#aacfff);
+ position:relative;display:grid;gap:6px;min-width:0;padding:15px;border-radius:16px;border:1px solid var(--line);
+ background:light-dark(#ffffffa8,#1a2532);color:inherit;text-decoration:none;
+}
+.dashboard-metric:hover{border-color:var(--metric-ink)}
+.dashboard-metric--subscription{--metric-bg:light-dark(#efe9fb,#342e50);--metric-ink:light-dark(#643f9c,#d5beff)}
+.dashboard-metric--attention{--metric-bg:light-dark(#fff0d8,#47351e);--metric-ink:light-dark(#835314,#ffd28f)}
+.dashboard-metric--library{--metric-bg:light-dark(#def3ec,#204034);--metric-ink:light-dark(#20694e,#a3e6c6)}
+.dashboard-metric-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:var(--metric-bg,light-dark(#e7f0ff,#253956));color:var(--metric-ink,light-dark(#24568e,#aacfff))}
+.dashboard-metric strong{font-size:clamp(23px,3vw,34px);line-height:1.15;font-variant-numeric:tabular-nums;margin-top:5px}
+.dashboard-metric>span:not(.dashboard-metric-icon){font-size:13px;color:var(--muted)}
+.dashboard-metric-arrow{position:absolute;right:13px;top:16px;color:var(--muted)}
+.overview-dashboard .overview-grid,.overview-dashboard .overview-review{margin-top:0}
+.overview-dashboard .dashboard-library-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:180px;text-align:center}
+.dashboard-library-empty p{margin:0}
+@media(max-width:1100px){.dashboard-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:540px){
+ .dashboard-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .dashboard-hero{flex-wrap:wrap;border-radius:18px}
+ .dashboard-refresh{min-height:38px}
+}
+
+.dashboard-metric{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:96px;background:linear-gradient(115deg,var(--metric-bg),light-dark(#ffffffde,#1a2532) 75%)}
+.dashboard-metric--transfer{--metric-bg:light-dark(#e0f4fa,#203c4a);--metric-ink:light-dark(#22627c,#a3def3)}
+.dashboard-metric>.dashboard-metric-icon{width:clamp(36px,4.3vw,58px);height:clamp(36px,4.3vw,58px);flex:none}
+.dashboard-metric-copy{display:grid;justify-items:end;gap:5px;text-align:right;min-width:0}
+.dashboard-metric-copy strong{color:var(--metric-ink);margin:0}
+.dashboard-metric-copy span{font-size:13px;color:var(--muted)}
+.personal-dashboard .dashboard-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:540px){
+ .dashboard-metric{min-height:78px;padding:10px}
+ .personal-dashboard .dashboard-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+}

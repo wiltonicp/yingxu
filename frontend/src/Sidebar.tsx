@@ -1,7 +1,7 @@
 import {Brand} from './Brand';
 import {Link,useLocation} from 'react-router-dom';
 import {useQuery} from '@tanstack/react-query';
-import {House,Search,History,ScrollText,LibraryBig,Bookmark,ClipboardCheck,List,RadioTower,Sparkles,Users,SlidersHorizontal,type LucideIcon} from 'lucide-react';
+import {House,Search,History,ScrollText,LibraryBig,Bookmark,ClipboardCheck,List,RadioTower,Sparkles,Users,SlidersHorizontal,Plug,type LucideIcon} from 'lucide-react';
 import {api,type User,type MediaRequest} from './api';
 
 type Item=readonly [string,string,LucideIcon];
@@ -14,7 +14,7 @@ export function navigationGroups(admin:boolean):Group[]{
   {label:'订阅',links:[['subscriptions','订阅管理',Bookmark],['requests','订阅审核',ClipboardCheck]]},
   {label:'资源',links:[['resources','资源归档',List],['library','媒体库',LibraryBig]]},
   {label:'处理',links:[['jobs','任务中心',List],['processing-records','整理记录',History]]},
-  {label:'管理',links:[['channels','频道监控',RadioTower],['processing','整理设置',Sparkles],['users','用户管理',Users],['settings','连接设置',SlidersHorizontal],['logs','日志中心',ScrollText]]},
+  {label:'管理',links:[['channels','频道监控',RadioTower],['processing','整理设置',Sparkles],['users','用户管理',Users],['settings','连接设置',SlidersHorizontal],['plugins','插件',Plug],['logs','日志中心',ScrollText]]},
  ];
 }
 

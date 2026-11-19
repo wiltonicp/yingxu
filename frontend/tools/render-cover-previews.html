@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh"><meta charset="utf-8"><title>Render local Emby cover examples</title>
+<body><pre id="result">pending</pre><script type="module">
+import {artworkCount, loadCoverTitleFont, renderCover, templates, withArtwork} from '/src/embyCoverRenderer.ts';
+
+const posters = [335984, 155, 157336, 438631, 27205, 603, 238, 545611, 129];
+try {
+  await loadCoverTitleFont('zongyi');
+  const webps = await withArtwork(posters.map(id => '/login-posters/' + id + '.jpg'), images =>
+    Object.fromEntries(Object.keys(templates).map(style => [style,
+      renderCover('华语电影', style, images.slice(0, artworkCount[style]), .5, 'image/webp', 'Chinese Movies')])));
+  document.querySelector('#result').textContent = JSON.stringify(webps);
+} catch (error) {
+  document.querySelector('#result').textContent = String(error);
+}
+</script></body></html>

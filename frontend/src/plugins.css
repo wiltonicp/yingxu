@@ -1,0 +1,126 @@
+.built-in-plugins {
+ display: grid;
+ grid-template-columns: repeat(auto-fill, minmax(min(100%, max(16rem, calc((100% - 3rem) / 4))), 1fr));
+ grid-auto-rows: 1fr;
+ gap: 1rem;
+}
+
+.built-in-plugin .built-in-plugin-heading {
+ display: grid;
+ grid-template-columns: auto minmax(0, 1fr) auto;
+ align-items: center;
+ gap: .65rem;
+}
+
+.built-in-plugins .panel.built-in-plugin > .built-in-plugin-heading > h2 {
+ margin: 0;
+ font-size: 1rem;
+ line-height: 1.25;
+ overflow-wrap: anywhere;
+}
+
+.built-in-plugin-icon {
+ display: grid;
+ place-items: center;
+ width: 2.4rem;
+ height: 2.4rem;
+ border-radius: .75rem;
+ color: light-dark(#6035af, #d8b4ff);
+ background: light-dark(#eee5ff, #37235c);
+}
+
+.built-in-plugin-icon[data-plugin="emby-cover"] {
+ color: light-dark(#056e78, #8ee3e9);
+ background: light-dark(#dcf5f6, #153b45);
+}
+
+.built-in-plugin-status {
+ border-radius: 999px;
+ padding: .25rem .65rem;
+ font-size: .75rem;
+ font-weight: 600;
+ line-height: 1.4;
+ white-space: nowrap;
+ color: light-dark(#4b5c71, #c9d4e4);
+ background: light-dark(#eaf0f6, #27364a);
+}
+
+.built-in-plugin-status[data-status="enabled"] {
+ color: light-dark(#12623e, #a2ebc5);
+ background: light-dark(#dff5e8, #17442f);
+}
+
+.built-in-plugin-status[data-status="error"] {
+ color: light-dark(#a3332a, #ffc6be);
+ background: light-dark(#fce7e4, #512b29);
+}
+
+dialog.ai-recognition-settings { width: min(54rem, calc(100% - 2rem)); }
+
+.ai-recognition-settings fieldset {
+ border: 0;
+ min-width: 0;
+ padding: 0;
+ margin: 0 0 1rem;
+}
+
+.ai-recognition-settings legend {
+ font-weight: 600;
+ margin-bottom: .5rem;
+}
+
+.ai-recognition-settings .dialog-foot {
+ flex-wrap: wrap;
+}
+
+.ai-recognition-key { position: relative; }
+.ai-recognition-key input { width: 100%; padding-inline-end: 3rem; }
+.ai-recognition-key .icon-button { position: absolute; inset-inline-end: .4rem; top: 50%; transform: translateY(-50%); }
+
+.ai-recognition-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.ai-recognition-model-row { display: flex; align-items: stretch; gap: .5rem; }
+.ai-recognition-model-row input { flex: 1; min-width: 0; }
+.ai-recognition-model-row button { flex-shrink: 0; }
+.ai-recognition-connected {
+ margin-inline-end: auto;
+ align-self: center;
+ border-radius: 999px;
+ padding: .25rem .65rem;
+ color: light-dark(#12623e, #a2ebc5);
+ background: light-dark(#dff5e8, #17442f);
+ font-size: .8125rem;
+ font-weight: 600;
+}
+@media (max-width: 640px) {
+ .ai-recognition-grid { grid-template-columns: minmax(0, 1fr); gap: .75rem; }
+ .ai-recognition-connected { flex-basis: 100%; text-align: center; }
+}
+
+.ai-recognition-settings form .dialog-body > p:first-child { margin: 0 0 .75rem; }
+.ai-recognition-settings .ai-recognition-field {
+ display: grid;
+ align-content: start;
+ gap: .4rem;
+ min-width: 0;
+}
+.ai-recognition-settings .ai-recognition-field > label { margin: 0; line-height: 1.5; }
+.ai-recognition-settings .ai-recognition-field :is(input, textarea, select) { margin: 0; }
+.ai-recognition-settings .ai-recognition-model { margin-top: 1rem; }
+.ai-recognition-prompt textarea { resize: vertical; }
+.ai-recognition-settings .ai-recognition-scopes > label { margin: 0; padding-block: .55rem; }
+
+.built-in-plugins .built-in-plugin { display:flex; flex-direction:column; }
+.built-in-plugin-actions { display:flex; justify-content:flex-end; margin-top:auto; }
+.built-in-plugin-actions button { min-inline-size:6rem; justify-content:center; }
+
+.built-in-plugins .built-in-plugin-description {
+ display: -webkit-box;
+ -webkit-box-orient: vertical;
+ -webkit-line-clamp: 2;
+ overflow: hidden;
+ overflow-wrap: anywhere;
+ line-height: 1.5;
+ block-size: 3em;
+ flex: none;
+ margin: .85rem 0 1rem;
+}

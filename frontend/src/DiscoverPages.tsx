@@ -1,3 +1,4 @@
+import './discoveryCompact.css';
 import {CastStrip} from './CastStrip';
 import {DiscoveryBackdrop} from './DiscoveryBackdrop';
 import {mediaBadges} from './mediaBadges';
@@ -9,7 +10,7 @@ import {useQuery,useInfiniteQuery,useQueries,useQueryClient} from '@tanstack/rea
 import {api,type Media,type Subscription,type MediaRequest} from './api';
 import {Loading} from './Loading';
 import {MediaCard} from './MediaCard';
-import {Search,X,Star,Check,ArrowLeft,BookmarkPlus} from 'lucide-react';
+import {Search,X,Star,Check,ArrowLeft,BookmarkPlus,SlidersHorizontal} from 'lucide-react';
 type Film=Media&{douban_id?:string;poster_url?:string;identity_unresolved?:boolean;source_url?:string;overview:string;score:number|null;in_library?:boolean;source_label?:string};
 type Detail=Film&{genres:string[];runtime:number|null;seasons?:number;episodes?:number;backdrop?:string;original_title?:string;status?:string;tagline?:string;countries?:string[];cast:{name:string;character:string;profile?:string}[]};
 type Open=(s:{title:string;body:ReactNode;action:()=>Promise<unknown>;label?:string})=>void;
@@ -19,6 +20,7 @@ export function DiscoverPage(){
  const location=useLocation(),cache=useQueryClient();
  const savedView=cache.getQueryData<DiscoveryView>(discoveryViewKey(location.pathname+location.search));
  const category=params.get('category')||'all',source=params.get('source')||'tmdb',search=params.get('q')||'',genre=params.get('genre')||'',region=params.get('region')||'',year=params.get('year')||'',sort=params.get('sort')||'popular';
+ const [showAdvanced,setShowAdvanced]=useState(false);
  const [draft,setDraft]=useState(savedView?.draft??search),[olderYears,setOlderYears]=useState(savedView?.olderYears??false);
  function change(updates:Record<string,string>){const next=new URLSearchParams(params);Object.entries(updates).forEach(([k,v])=>v?next.set(k,v):next.delete(k));setParams(next,{replace:true});}
  const sources=useQuery({queryKey:['catalog-sources'],queryFn:()=>api<{items:{id:string;name:string;enabled:boolean}[]}>('/catalog/sources')});
@@ -46,15 +48,22 @@ export function DiscoverPage(){
  function preference(key:string,value:string){change({[key]:value,...(category==='all'?{category:'movie'}:{}),...(category==='japanese'&&key==='region'&&value!=='JP'?{category:'tv'}:{})});}
  return <><section className="discovery-cinema-hero"><DiscoveryBackdrop films={films}/><div className="discovery-hero-content"><div className="page-title"><div><h1>发现下一部好故事。</h1><p className="subtitle">从热门推荐到你的偏好，让想看的每一部都有去处。</p></div></div>
  <form className="catalog-search" onSubmit={e=>{e.preventDefault();change({q:draft.trim(),source:draft.trim()?'tmdb':source,category:year?'movie':['all','movie','tv'].includes(category)?category:'all',genre:'',region:'',sort:'popular'});}}><Search size={20}/><input aria-label="搜索电影或剧集" placeholder="搜索电影、剧集" value={draft} onChange={e=>setDraft(e.target.value)} maxLength={100}/>{draft&&<button type="button" className="icon-button" aria-label="清空影视搜索" onClick={()=>{setDraft('');change({q:''});}}><X size={18}/></button>}<button className="primary">搜索</button></form>
- <p className="catalog-search-hint">关键词搜索使用TMDB；豆瓣提供独立推荐、评分与偏好筛选。</p></div></section>
- <section className="expanded-filters" aria-label="影视偏好筛选"><div className="expanded-filter-heading"><span>探索偏好{filterCount?' · '+filterCount+' 项':''}</span><button className="text-link" onClick={()=>{change({genre:'',region:'',year:'',sort:'popular'});setOlderYears(false);}}>重置筛选</button></div>
+ </div></section>
+ <section className="expanded-filters discovery-filters" aria-label="影视筛选" data-expanded={showAdvanced}>
+ <div className="discovery-filter-header">
+  <button className="discovery-filter-toggle" type="button" aria-expanded={showAdvanced} aria-controls="discover-advanced-filters" onClick={()=>setShowAdvanced(!showAdvanced)}><SlidersHorizontal size={16}/>{showAdvanced?'收起筛选':'筛选'}{filterCount>0&&<span>{filterCount}</span>}</button>
+ </div>
+ <div className="discovery-quick-filters">
  <FilterRow label="来源" options={(sources.data?.items||[{id:'tmdb',name:'TMDB',enabled:true},{id:'douban',name:'豆瓣',enabled:true}]).map(x=>[x.id,x.name])} value={source} onChange={value=>{setDraft('');change({source:value,q:'',category:'movie'});}}/>
  <FilterRow label="类别" options={categories} value={category} onChange={value=>change({category:value,genre:'',...(value==='japanese'?{region:'JP'}:{}),...(value==='all'?{year:''}:{})})}/>
+ </div>
+ <div id="discover-advanced-filters" className="discovery-advanced-filters">
+  <div className="expanded-filter-heading"><span>偏好筛选{filterCount?' · '+filterCount+' 项':''}</span>{filterCount>0&&<button type="button" className="text-link" onClick={()=>{change({genre:'',region:'',year:'',sort:'popular'});setOlderYears(false);}}>重置</button>}</div>
  <FilterRow label="类型" options={[["","全部"],...genreOptions]} value={genre} disabled={!!search} onChange={value=>preference('genre',value)}/>
  <FilterRow label="地区" options={[["","全部"],...regionOptions]} value={region} disabled={!!search} onChange={value=>preference('region',value)}/>
  <FilterRow label="年份" options={[["","全部"],...Array.from({length:olderYears?new Date().getFullYear()-1899:12},(_,i)=>String(new Date().getFullYear()-i)).map(y=>[y,y]),...(!olderYears&&year&&Number(year)<new Date().getFullYear()-11?[[year,year]]:[])]} value={year} disabled={!!search&&category==='all'} onChange={value=>preference('year',value)} trailing={<button type="button" className="filter-older-years" onClick={()=>setOlderYears(!olderYears)} aria-expanded={olderYears}>{olderYears?'收起早期年份':'更早年份'} {olderYears?'−':'＋'}</button>}/>
  <FilterRow label="排序" options={[["popular","近期热度"],["rating","高分优先"],["newest","最新上映"]]} value={sort} disabled={!!search} onChange={value=>preference('sort',value)}/>
- {search&&<small>关键词结果按相关性排列；清空搜索后可使用完整偏好筛选。</small>}{sources.error&&<p className="error">{sources.error.message}</p>}</section>
+ </div>{sources.error&&<p className="error">{sources.error.message}</p>}</section>
  <div className="catalog-result-heading"><span>{search?'“'+search+'” 的搜索结果':(source==='douban'?'豆瓣':'TMDB')+' · 精选影视'}</span>{first&&<small>已显示 {films.length} 部 · 已加载 {feed.data?.pages.length} / {first.total_pages} 页{typeof first.total_results==='number'?' · 共 '+first.total_results+' 条':''}</small>}</div>
  {feed.error&&<div className="error" role="alert">{feed.error.message}<button onClick={()=>feed.refetch()}>重试</button></div>}{first?.warning&&<p className="notice">{first.warning}</p>}
  {feed.isPending?<Loading kind="posters" count={12} label="正在读取影视…"/>:<div className="media-grid">{films.map(film=><MediaCard key={film.douban_id?'douban:'+film.douban_id:film.media_type+film.tmdb_id} film={{...film,in_library:present.has(film.media_type+':'+film.tmdb_id),subscribed:subscribed.has(film.media_type+':'+film.tmdb_id),completion:progressByMedia.get(film.media_type+':'+film.tmdb_id)}} to={film.douban_id?'/douban/'+film.media_type+'/'+film.douban_id:undefined}/>)}</div>}

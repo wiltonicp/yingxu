@@ -124,3 +124,4 @@ dialog.ai-recognition-settings { width: min(54rem, calc(100% - 2rem)); }
  flex: none;
  margin: .85rem 0 1rem;
 }
+.built-in-plugin-icon[data-plugin="access"] { color:light-dark(#87511e,#ffd89c); background:light-dark(#fff0d9,#49351d); }

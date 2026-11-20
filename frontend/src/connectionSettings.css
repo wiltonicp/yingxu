@@ -1,0 +1,39 @@
+.workspace-page .connection-section-select { display:none; }
+.workspace-page[data-page="settings"] > nav.workspace-tabs.connection-tabs { flex-wrap:wrap; }
+.connection-help { min-width:0; }
+.connection-help summary { cursor:pointer; font-weight:600; }
+.connection-help:not([open]) { padding-block:.85rem; }
+.connection-help[open] summary { margin-bottom:.65rem; }
+.connection-help p { margin:.6rem 0; }
+.connection-help + .connection-help { margin-top:.6rem; }
+@media(max-width:760px){
+ .workspace-page[data-page="settings"] > nav.workspace-tabs.connection-tabs { display:none; }
+ .workspace-page .connection-section-select {
+  display:grid; grid-template-columns:auto minmax(0,1fr); gap:.65rem; align-items:center;
+  margin:0 0 1rem; padding:.5rem; border:1px solid var(--line); border-radius:.85rem;
+  background:light-dark(#eaf1fc,#1a2b43);
+ }
+ .connection-section-select span { padding-inline-start:.2rem; font-size:.82rem; font-weight:600; }
+ .workspace-page .connection-section-select select { margin:0; min-height:42px; padding:.4rem .65rem; }
+ .settings-notes.connection-help-list { display:grid; grid-template-columns:minmax(0,1fr); gap:0; margin-top:.75rem; }
+}
+
+.request-card .request-card-cover .poster-placeholder svg { display:block; flex:none; width:24px; height:24px; }
+.request-card .request-card-cover .poster-placeholder { display:grid; place-items:center; }
+
+.connection-card-pair { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(.85rem,1.65vw,1.35rem); align-items:start; margin-bottom:1rem; }
+.connection-card-pair > .panel { min-width:0; margin:0; }
+.connection-card-pair .drive115-authorization { max-width:none; }
+.connection-card-pair .checkin-schedule { grid-template-columns:minmax(0,10rem) minmax(0,1fr); }
+dialog.access-plugin-dialog { width:min(56rem,calc(100% - 2rem)); }
+.access-plugin-dialog .settings-columns { grid-template-columns:minmax(0,1fr) minmax(12rem,.65fr); gap:.85rem; }
+.access-plugin-dialog .settings-columns .panel { margin-bottom:.55rem; }
+@media(max-width:1050px){.connection-card-pair { grid-template-columns:minmax(0,1fr); }}
+@media(max-width:700px){
+ .connection-card-pair .checkin-schedule,.access-plugin-dialog .settings-columns { grid-template-columns:minmax(0,1fr); }
+}
+
+.re0-automation-pair { align-items:stretch; }
+.re0-automation-pair > .panel { display:flex; flex-direction:column; }
+.re0-automation-pair > .panel > footer { margin-top:auto; padding-top:1rem; }
+.re0-auto-footer { display:flex; align-items:center; }

@@ -8,7 +8,7 @@ import {api} from './api';
 type Config={
  proxy_enabled?:boolean;proxy_port?:number;proxy_status?:{state:string;port:number|null;error:string|null};
  cache_refresh?:{ok:boolean;at:number;error?:string};user_template_id?:string;cache_interval_minutes?:number;
- enabled:boolean;server:string;refresh_after_output:boolean;api_key_configured:boolean;
+ enabled:boolean;server:string;public_url?:string;refresh_after_output:boolean;api_key_configured:boolean;
  last_check?:{ok:boolean;http_status:number;checked_at?:number};last_refresh?:{ok:boolean};
 };
 
@@ -30,7 +30,7 @@ export function EmbyPage({busy,run}:{busy:boolean;run:(work:()=>Promise<unknown>
   await run(async()=>{
    await api('/settings/emby','PUT',{
     user_template_id:value!.user_template_id??'',cache_interval_minutes:value!.cache_interval_minutes??60,
-    enabled:value!.enabled,server:value!.server,refresh_after_output:value!.refresh_after_output,api_key:key||null,
+    enabled:value!.enabled,server:value!.server,public_url:value!.public_url??"",refresh_after_output:value!.refresh_after_output,api_key:key||null,
     proxy_enabled:value!.proxy_enabled??false,proxy_port:value!.proxy_port??18099,
    });
    setKey('');setMessage('配置已保存，反代开关和端口已应用；没有修改Emby部署。');
@@ -43,7 +43,8 @@ export function EmbyPage({busy,run}:{busy:boolean;run:(work:()=>Promise<unknown>
    <section className="panel emby-setting-card" aria-labelledby="emby-connection-heading">
     <div className="emby-card-heading emby-card-heading--status"><span className="emby-setting-icon"><Server size={19}/></span><div><h2 id="emby-connection-heading">连接与授权</h2><p>填写原 Emby 服务地址与管理密钥。</p></div><span className="emby-state-badge emby-connection-status" data-state={connectionState} role="status" aria-label={'Emby连接状态：'+connectionLabel} title={connection.data?.checked_at?'最近检测：'+new Date(connection.data.checked_at*1000).toLocaleString():'以实际连接检测结果为准'}>{connectionLabel}</span></div>
     <label className="switch-row emby-setting-switch"><span><b>启用 Emby 集成</b><small>连接媒体库与账号服务。</small></span><input type="checkbox" role="switch" checked={value.enabled} onChange={e=>setValue({...value,enabled:e.target.checked,...(!e.target.checked?{proxy_enabled:false}:{})})}/></label>
-    <label className="emby-field">服务器地址<input value={value.server} onChange={e=>setValue({...value,server:e.target.value})} placeholder="http://NAS地址:8096"/><small>使用原服务地址，不要填写下方的反代入口。</small></label>
+    <label className="emby-field">内网服务器地址<input value={value.server} onChange={e=>setValue({...value,server:e.target.value})} placeholder="http://NAS地址:8096"/><small>使用原服务地址，不要填写下方的反代入口。</small></label>
+    <label className="emby-field">外网地址（选填）<input value={value.public_url??''} onChange={e=>setValue({...value,public_url:e.target.value})} placeholder="https://emby.example.com" maxLength={2000}/><small>用于「在 Emby 打开」，留空则使用内网地址。</small></label>
     <label className="emby-field">API 密钥<input type="password" value={key} onChange={e=>setKey(e.target.value)} autoComplete="off" placeholder={value.api_key_configured?'已保存，留空保留':'输入Emby API密钥'}/><small>后端加密保存，不回显。</small></label>
     {connectionHint&&!connectionDirty&&value.enabled&&<p className="emby-connection-hint" role="alert">{connectionHint}</p>}
    </section>

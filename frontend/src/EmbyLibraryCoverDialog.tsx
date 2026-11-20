@@ -129,6 +129,15 @@ export function EmbyLibraryCoverDialog({close}:{close:()=>void}){
    setBusy('');
   }
  }
+ const stage=!config?'loading':dirty?'save':!saved?.libraries.length?'select':tab==='preview'&&eligible.length?'sync':'preview';
+ const stageLabel={loading:'等待配置',save:'保存配置',select:'选择媒体库',sync:'确认同步（'+eligible.length+'）',preview:'生成预览'}[stage];
+ const busyLabel:Record<string,string>={save:'保存中…',preview:'生成中…',sync:'同步中…',restore:'恢复中…'};
+ function nextStep(){
+  if(stage==='save')void save();
+  else if(stage==='select')setTab('config');
+  else if(stage==='preview')void generate();
+  else if(stage==='sync'){setTab('preview');setConfirm('sync');}
+ }
  return <dialog ref={dialog} className="emby-cover-dialog emby-library-cover" aria-labelledby="library-cover-heading" onCancel={event=>{event.preventDefault();if(!busy)close();}}>
   <div className="dialog-head"><div><h2 id="library-cover-heading">媒体库封面</h2></div><button type="button" className="icon-button" aria-label="关闭媒体库封面" disabled={!!busy} onClick={close}><X/></button></div>
   <div className="dialog-body emby-cover-batch">
@@ -174,7 +183,8 @@ export function EmbyLibraryCoverDialog({close}:{close:()=>void}){
     </fieldset>}
     {tab==='preview'&&<div className="emby-cover-results-pane">
     {progress&&<p role="status">{progress}</p>}
-    {!results.length&&<p className="muted">尚无预览</p>}
+    {!results.length&&!progress&&<p className="muted">尚无预览</p>}
+    {!!results.length&&!!eligible.length&&!busy&&!confirm&&<button className="emby-preview-refresh" type="button" onClick={()=>void generate()}>重新生成</button>}
     <div className="emby-cover-preview-grid">{results.map(result=><article key={result.folder.id}>
      <b>{result.folder.name}</b>
      {result.src&&<img src={result.src} alt={result.folder.name+' 封面预览'}/>}
@@ -183,15 +193,15 @@ export function EmbyLibraryCoverDialog({close}:{close:()=>void}){
     </article>)}</div>
     <details className="emby-cover-restore"><summary>恢复原图</summary><div className="toolbar">{folders.map(folder=><button key={folder.id} disabled={!!busy} onClick={()=>setConfirm(folder)}>{folder.name}</button>)}</div></details>
     </div>}
-    {confirm&&<div className="notice" role="group" aria-label="确认封面操作"><b>{confirm==='sync'?'确认同步 '+eligible.length+' 个已生成预览的媒体库？':'恢复「'+confirm.name+'」的原封面？'}</b><div className="toolbar"><button onClick={()=>setConfirm(null)}>取消</button><button className="primary" onClick={()=>void (confirm==='sync'?sync():restore(confirm))}>确认{confirm==='sync'?'同步':'恢复'}</button></div></div>}
-    {message&&<p className={message.error?'error':''} role={message.error?'alert':'status'}>{message.text}</p>}
    </>}
   </div>
-  <div className="dialog-foot">
-   <button type="button" disabled={!!busy} onClick={close}>关闭</button>
-   <button type="button" disabled={!!busy||!config||!dirty} onClick={()=>void save()}>{busy==='save'?'保存中…':'保存配置'}</button>
-   <button type="button" disabled={!!busy||dirty||!saved?.libraries.length||!!confirm} onClick={()=>void generate()}>生成预览</button>
-   <button type="button" className="primary" disabled={!!busy||dirty||!eligible.length||!!confirm} onClick={()=>{setTab('preview');setConfirm('sync');}}>确认同步{eligible.length?'（'+eligible.length+'）':''}</button>
+  <div className="dialog-foot emby-cover-stage-footer">
+   {message&&<p className={message.error?'error':'muted'} role={message.error?'alert':'status'}>{message.text}</p>}
+   {confirm?<div className="emby-cover-stage-confirm" role="group" aria-label="确认封面操作">
+    <b>{confirm==='sync'?'同步 '+eligible.length+' 个媒体库？':'恢复「'+confirm.name+'」的原封面？'}</b>
+    <button type="button" onClick={()=>setConfirm(null)}>取消</button>
+    <button type="button" className="primary" onClick={()=>void (confirm==='sync'?sync():restore(confirm))}>{confirm==='sync'?'确认同步':'确认恢复'}</button>
+   </div>:<button type="button" className="primary" disabled={!!busy||stage==='loading'} onClick={nextStep}>{busyLabel[busy]||stageLabel}</button>}
   </div>
  </dialog>;
 }

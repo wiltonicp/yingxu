@@ -1,0 +1,7 @@
+.drive115-authorization { max-width:44rem; }
+.drive115-authorization > label { margin:0 0 .9rem; }
+.drive115-active-qr { margin:.9rem 0 .5rem; }
+.drive115-active-qr img { display:block; width:min(13rem,100%); aspect-ratio:1; padding:.45rem; border:1px solid var(--line); border-radius:.85rem; background:#fff; }
+.drive115-session-settings { margin-top:.9rem; border-top:1px solid var(--line); padding-top:.65rem; }
+.drive115-session-settings summary { cursor:pointer; color:var(--muted); }
+.drive115-session-settings button { margin-top:.6rem; }

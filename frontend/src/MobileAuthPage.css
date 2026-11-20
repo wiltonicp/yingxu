@@ -44,3 +44,11 @@
 .phone-auth-page--keyboard .phone-auth-submit{margin-top:24px}
 .phone-auth-page--keyboard .phone-auth-footer{display:none}
 @media(prefers-reduced-motion:reduce){.phone-auth-field,.phone-auth-content .phone-auth-submit{transition:none}}
+
+/* Local contrast for form controls without changing the backdrop or safe areas. */
+.phone-auth-content .phone-auth-caption { color:#fff; font-weight:600; text-shadow:0 1px 6px #08111c; }
+.phone-auth-content .phone-auth-field { background:#101b2be6; border:1px solid #e5efff65; border-radius:8px; margin-top:4px; }
+.phone-auth-content .phone-auth-field input { color:#fff; padding-inline:11px; caret-color:#bedbff; }
+.phone-auth-content .phone-auth-field input::placeholder { color:#d2dce9; opacity:1; }
+.phone-auth-content .phone-auth-field:focus-within { border-color:#bdd9ff; box-shadow:0 0 0 2px #88b8ff35; }
+.phone-auth-content .phone-auth-eye { color:#e2edfb; }

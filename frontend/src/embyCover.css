@@ -96,3 +96,14 @@ dialog.emby-library-cover { width:min(66rem, calc(100% - 2rem)); }
 .emby-cover-schedule-value code { padding:.2rem .45rem; border-radius:.35rem; background:light-dark(#edf2f9,#24344b); }
 .emby-cover-schedule-value small { color:var(--muted); }
 .emby-cover-results-pane > p { margin:0; }
+
+.emby-library-cover .emby-cover-stage-footer { align-items:center; justify-content:flex-end; }
+.emby-cover-stage-footer > p { max-width:100%; margin:0 auto 0 0; font-size:.84rem; }
+.emby-cover-stage-confirm { display:grid; width:100%; grid-template-columns:minmax(0,1fr) auto auto; gap:.5rem; align-items:center; }
+.emby-preview-refresh { justify-self:end; }
+@media(max-width:640px) {
+ .emby-library-cover .emby-cover-stage-footer > button { flex:1 1 100%; }
+ .emby-cover-stage-confirm { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .emby-cover-stage-confirm b { grid-column:1/-1; }
+ .emby-cover-stage-footer > p { flex-basis:100%; }
+}

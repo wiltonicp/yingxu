@@ -1,9 +1,10 @@
+import './connectionSettings.css';
 import {PluginsPage} from './PluginsPage';
 import {ThemeChooser} from './Theme';
 import {ManualProcessingTasks,submitProcessing} from './ManualProcessing';
 import {SystemUpdates,UpdateNotification} from './SystemUpdates';
 import {ProcessingReceiptActions} from './ProcessingReceiptActions';
-import {AccessSettings} from './AccessSettings';
+
 import {DEFAULT_WASHING_KEYS,policyUpdatePayload} from './processingPolicyForm';
 import {Re0Page} from './Re0Pages';
 import {Subscriptions,Requests} from './SubscriptionPages';
@@ -15,7 +16,7 @@ import {useMobileLayout} from './authDevice';
 import {useMobileViewport} from './useMobileViewport';
 import {VersionBadge} from './VersionBadge';
 import {useEffect, useRef, useState, type FormEvent, type ReactNode} from 'react';
-import {NavLink, Route, Routes, Navigate, useParams, useLocation} from 'react-router-dom';
+import {NavLink, Route, Routes, Navigate, useParams, useLocation, useNavigate} from 'react-router-dom';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {ChevronDown, Clapperboard, LogOut, MoreHorizontal, X} from 'lucide-react';
 import {Sidebar,navigationGroups} from './Sidebar';
@@ -75,19 +76,32 @@ export default function App(){
   <Route path="/search" element={<Navigate to="/discover" replace/>}/>
   <Route path="/subscriptions" element={<Subscriptions admin={admin} busy={busy} run={run} open={setDialog}/>}/>
   <Route path="/requests" element={<Requests admin={admin} busy={busy} run={run} open={setDialog}/>}/>
-  {admin&&<><Route path="/drive115" element={<Navigate to="/settings/drive115" replace/>}/><Route path="/telegram" element={<Navigate to="/settings/telegram" replace/>}/><Route path="/settings/:section?" element={<ConnectionSettings busy={busy} run={run}/>}/><Route path="/plugins" element={<PluginsPage/>}/><Route path="/channels" element={<ChannelsPage busy={busy} run={run}/>}/><Route path="/resources" element={<ResourcesPage/>}/><Route path="/jobs" element={<JobsPage busy={busy} run={run}/>}/><Route path="/processing-records" element={<ProcessingRecordsPage/>}/><Route path="/logs" element={<LogCenterPage/>}/><Route path="/users" element={<UserManagement busy={busy}/>}/><Route path="/integrations" element={<Navigate to="/settings/tmdb" replace/>}/><Route path="/emby" element={<Navigate to="/settings/emby" replace/>}/><Route path="/output" element={<Navigate to="/processing/output" replace/>}/><Route path="/processing/:section?" element={<ProcessingWorkspace busy={busy} run={run}/>}/></>}
+  {admin&&<><Route path="/drive115" element={<Navigate to="/settings/drive115" replace/>}/><Route path="/telegram" element={<Navigate to="/settings/telegram" replace/>}/><Route path="/settings/:section?" element={<ConnectionSettings busy={busy} run={run}/>}/><Route path="/plugins/:plugin?" element={<PluginsPage/>}/><Route path="/channels" element={<ChannelsPage busy={busy} run={run}/>}/><Route path="/resources" element={<ResourcesPage/>}/><Route path="/jobs" element={<JobsPage busy={busy} run={run}/>}/><Route path="/processing-records" element={<ProcessingRecordsPage/>}/><Route path="/logs" element={<LogCenterPage/>}/><Route path="/users" element={<UserManagement busy={busy}/>}/><Route path="/integrations" element={<Navigate to="/settings/tmdb" replace/>}/><Route path="/emby" element={<Navigate to="/settings/emby" replace/>}/><Route path="/output" element={<Navigate to="/processing/output" replace/>}/><Route path="/processing/:section?" element={<ProcessingWorkspace busy={busy} run={run}/>}/></>}
   <Route path="*" element={<Navigate to={admin?"/overview":"/discover"} replace/>}/>
  </Routes></main><nav className="mobile-nav">{links.filter(([k])=>['overview','discover','subscriptions'].includes(k)).sort((a,b)=>['overview','discover','subscriptions'].indexOf(a[0])-['overview','discover','subscriptions'].indexOf(b[0])).map(([url,title,Icon])=><NavLink to={'/'+url} key={url}><Icon size={19}/><span>{url==='discover'?'资源发现':url==='subscriptions'?'订阅管理':title}</span></NavLink>)}<button className="more-button" onClick={()=>setMobileMenu(true)} aria-label="更多页面"><MoreHorizontal size={19}/><span>更多</span></button></nav></div>{mobileMenu&&<MobileMenu close={()=>setMobileMenu(false)}><ThemeChooser/><div className="mobile-menu-grid">{links.map(([url,title,Icon])=><NavLink to={'/'+url} key={url} onClick={()=>setMobileMenu(false)}><Icon size={21}/>{title}</NavLink>)}</div><p className="muted">当前账号：{user.username}</p><button className="full" disabled={busy} onClick={logout}><LogOut size={17}/>退出登录</button><VersionBadge/></MobileMenu>}{dialog&&<Modal state={{...dialog,action:()=>run(dialog.action)}} close={()=>{setDialog(null);setError('');}} busy={busy} error={error}/>}</div>;
 }
 
+const connectionSections=[
+ ['drive115','115 网盘'],['tmdb','TMDB 元数据'],['telegram','TG 通知'],['emby','Emby 服务'],
+ ['re0','RE0 资源'],['updates','版本更新'],
+] as const;
+
 function ConnectionSettings(props:Actions){
  const {section}=useParams();
- const tabs=useRef<HTMLElement>(null);
- useEffect(()=>{tabs.current?.querySelector('.active')?.scrollIntoView({block:'nearest',inline:'center'});},[section]);
- if(!section)return <Navigate to="/settings/drive115" replace/>;
- if(!['drive115','tmdb','telegram','emby','re0','access','updates'].includes(section))return <Navigate to="/settings/drive115" replace/>;
- return <><p className="settings-context">管理 / 连接设置</p><nav ref={tabs} className="workspace-tabs" aria-label="连接设置分类">{[['drive115','115 网盘'],['tmdb','TMDB 元数据'],['telegram','TG 通知'],['emby','Emby 服务'],['re0','RE0 资源'],['access','访问与反代'],['updates','版本更新']].map(([key,label])=><NavLink key={key} to={'/settings/'+key} className={({isActive})=>isActive||section===key?'active':''}>{label}</NavLink>)}</nav>{section==='drive115'?<Drive115Page/>:section==='tmdb'?<TMDB {...props}/>:section==='telegram'?<TelegramNotificationsPage/>:section==='re0'?<Re0Page/>:section==='updates'?<SystemUpdates/>:section==='access'?<AccessSettings/>:<EmbyPage {...props}/>}</>;
+ const navigate=useNavigate();
+ if(section==="access")return <Navigate to="/plugins/access" replace/>;
+ if(!connectionSections.some(([key])=>key===section))return <Navigate to="/settings/drive115" replace/>;
+ return <>
+  <nav className="workspace-tabs connection-tabs" aria-label="连接设置分类">
+   {connectionSections.map(([key,label])=><NavLink key={key} to={'/settings/'+key}>{label}</NavLink>)}
+  </nav>
+  <label className="connection-section-select"><span>连接设置</span><select aria-label="连接设置分类" value={section} onChange={event=>navigate('/settings/'+event.target.value)}>
+   {connectionSections.map(([key,label])=><option key={key} value={key}>{label}</option>)}
+  </select></label>
+  {section==='drive115'?<Drive115Page/>:section==='tmdb'?<TMDB {...props}/>:section==='telegram'?<TelegramNotificationsPage/>:section==='re0'?<Re0Page/>:section==='updates'?<SystemUpdates/>:<EmbyPage {...props}/>}
+ </>;
 }
+
 function ProcessingWorkspace(props:Actions){
  const {section}=useParams();
  if(section&&section!=='output')return <Navigate to="/processing" replace/>;

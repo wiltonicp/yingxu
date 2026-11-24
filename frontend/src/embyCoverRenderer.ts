@@ -17,8 +17,8 @@ export type Template=keyof typeof templates;
 export const artworkCount:Record<Template,number>={cinema:1,editorial:1,spotlight:1,gallery:1,marquee:9,mosaic:9,row:8,split:1,fan:7,matrix:9,wall:6,overlay:1,reels:8};
 
 export const titleFonts={
- modern:{label:'现代黑体',family:'"Noto Sans SC", "Microsoft YaHei UI", "PingFang SC", sans-serif'},
- serif:{label:'典雅宋体',family:'"Noto Serif SC", "Songti SC", SimSun, serif'},
+ modern:{label:'现代黑体',family:'"Noto Sans SC", "Noto Sans CJK SC", "Microsoft YaHei UI", "PingFang SC", sans-serif'},
+ serif:{label:'典雅宋体',family:'"Noto Serif SC", "Noto Serif CJK SC", "Songti SC", SimSun, serif'},
  poster:{label:'厚重海报',family:'SimHei, "Heiti SC", "Microsoft YaHei", sans-serif'},
  zongyi:{label:'方正综艺简体',family:'"YX Cover Zongyi"',local:['FZZongYi-M05S','方正综艺简体']},
  chaohei:{label:'潮黑',family:'"YX Cover Chaohei"',local:['潮黑','潮黑体','潮黑简体','潮黑体简体','ChaoHei']},

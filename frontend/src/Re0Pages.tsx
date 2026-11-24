@@ -89,7 +89,7 @@ function ResourceDialog({item,close,allowUnlock,kind,tid}:{item:Resource;close:(
     }
     const result=await api<{job_id:number;status:string}>('/re0/transfer','POST',{offer:offer.offer,confirmed:true});setJob(result);markUnlocked();cache.removeQueries({queryKey:offerKey});await cache.invalidateQueries({queryKey:['jobs']});
    }else{
-    const result=await api<{share_url:string;access_code:string}>('/re0/unlock','POST',{slug:item.slug,expected_points:item.unlock_points,confirmed:true});resolvedLink.current=result;markUnlocked();copied(result);
+    const result=await api<{share_url:string;access_code:string}>('/re0/unlock','POST',{slug:item.slug,expected_points:item.unlock_points,confirmed:true,media_type:kind,tmdb_id:tid});resolvedLink.current=result;markUnlocked();copied(result);
    }
   }catch(e){setError((e as Error).message);}finally{setBusy(null);}
  }
